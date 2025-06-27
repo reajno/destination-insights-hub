@@ -8,11 +8,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-# Package lock files (optional, keep one if team prefers)
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
-
 # .env files (credentials, secrets)
 .env.*.local
 *.local
