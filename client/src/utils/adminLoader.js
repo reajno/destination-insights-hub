@@ -7,7 +7,7 @@ const adminLoader = async () => {
   } = await supabase.auth.getSession();
 
   if (!session?.user) {
-    throw redirect("/login");
+    throw redirect("/");
   }
 
   const { data: profile } = await supabase

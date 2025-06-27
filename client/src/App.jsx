@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Home from "./pages/Home";
-import Login from "./pages/Login";
+import Login from "./components/LoginForm";
 import Dashboard from "./pages/Dashboard";
 import MainLayout from "./layouts/MainLayout";
 import NotFound from "./pages/NotFound";
@@ -32,13 +32,7 @@ const router = createBrowserRouter([
         ),
         loader: adminLoader,
       },
-      { path: "/login", element: <Login />, loader: loginLoader },
     ],
-  },
-  {
-    path: "/login",
-    element: <Login />,
-    loader: loginLoader,
   },
 ]);
 

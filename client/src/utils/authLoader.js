@@ -7,7 +7,7 @@ const authLoader = async () => {
   } = await supabase.auth.getSession();
 
   if (!session?.user) {
-    throw redirect("/login");
+    throw redirect("/");
   }
 };
 
