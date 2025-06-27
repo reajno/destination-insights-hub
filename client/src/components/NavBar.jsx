@@ -1,45 +1,70 @@
-import { Box, Flex, Image, Spacer, Button } from "@chakra-ui/react";
-import { Link, useLocation } from "react-router-dom";
+import {
+  Flex,
+  Image,
+  AbsoluteCenter,
+  Container,
+  Text,
+  Spacer,
+} from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import localisLogo from "/src/assets/localis.png";
+import useAuth from "../../hooks/useAuth";
 
 const NavBar = () => {
-  const { pathname } = useLocation();
-
-  const isHomePage = pathname === "/";
-
-  if (!isHomePage) return null; // Only show NavBar on Home
-
+  const { user, isAuthLoading } = useAuth();
   return (
-    <Flex
-      bg="gray.800"
-      color="white"
-      px={6}
-      py={4}
-      align="center"
-      boxShadow="sm"
-    >
-      <Image src={localisLogo} alt="Localis logo" h={6} mr={4} />
-      <Spacer />
-      <Flex gap={4}>
-        <Link to="/login">
-          <Button bg="white" color="black" _hover={{ opacity: 0.9 }} size="sm">
-            Log In
-          </Button>
-        </Link>
-        <Button
-          as="a"
-          href="https://www.localis.co/"
-          target="_blank"
-          rel="noopener noreferrer"
-          bg="white"
-          color="black"
-          _hover={{ opacity: 0.9 }}
-          size="sm"
-        >
-          Find Out More
-        </Button>
-      </Flex>
-    </Flex>
+    <>
+      <Container
+        as="header"
+        w="full"
+        fluid
+        position="fixed"
+        bg="green.700"
+        px={6}
+        py={6}
+        h={20}
+        zIndex={1}
+      >
+        <Flex justifyContent="space-between">
+          <Link
+            to="https://www.localis.co/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Image
+              src={localisLogo}
+              alt="Localis logo"
+              h={6}
+              display="none"
+              md={{ display: "inline" }}
+            />
+          </Link>
+
+          {!isAuthLoading && user ? (
+            <Flex
+              flexDirection="column"
+              display="none"
+              md={{ display: "inline" }}
+            >
+              <Text as="p" textStyle="xs" fontWeight="bold" textAlign="end">
+                {user.first_name + " " + user.last_name}
+              </Text>
+              <Text as="p" textStyle="xs" color="gray.300">
+                {user.company} | {user.role}
+              </Text>
+            </Flex>
+          ) : (
+            <Spacer />
+          )}
+        </Flex>
+
+        <AbsoluteCenter w="100%">
+          <Text as="h1" textStyle={{ base: "lg", md: "xl" }}>
+            Destination Insights Hub
+          </Text>
+        </AbsoluteCenter>
+      </Container>
+    </>
   );
 };
 
