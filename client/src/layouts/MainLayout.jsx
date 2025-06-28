@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import NavBar from "@/components/NavBar";
+import NavBar from "@/components/nav/NavBar";
 import { Toaster } from "@/components/chakra-ui/toaster";
 
 const MainLayout = () => {
