@@ -1,17 +1,17 @@
 import { Box, Flex, Text, Spacer } from "@chakra-ui/react";
 import Login from "../components/LoginForm";
-import NavSpacer from "@/components/NavSpacer";
+import NavSpacer from "@/components/nav/NavSpacer";
 
 const Home = () => {
   return (
     <>
       <NavSpacer />
       <Flex
-        height="calc(100vh - 4.5rem)"
+        height="calc(100vh - 5rem)"
         flexDirection="column"
         alignItems="center"
         justifyContent="center"
-        bg="#F7F9FB"
+        bg="gray.200"
         px={6}
         py={10}
       >
