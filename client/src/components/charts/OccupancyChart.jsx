@@ -9,9 +9,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import useAuth from "../../hooks/useAuth";
-import YearSelect from "./filters/YearSelect";
-import { monthMap } from "../utils/maps";
+import useAuth from "../../../hooks/useAuth";
+import YearSelect from "../filters/YearSelect";
+import { monthMap } from "../../utils/maps";
 
 const OccupancyChart = ({ lgaName }) => {
   const { accessToken } = useAuth();
@@ -75,7 +75,12 @@ const OccupancyChart = ({ lgaName }) => {
                 : `$${Number(val).toLocaleString()}`
             }
           />
-          <Bar yAxisId="left" dataKey="occupancy" fill="#6366f1" name="Occupancy %" />
+          <Bar
+            yAxisId="left"
+            dataKey="occupancy"
+            fill="#6366f1"
+            name="Occupancy %"
+          />
           <Line
             yAxisId="right"
             type="monotone"

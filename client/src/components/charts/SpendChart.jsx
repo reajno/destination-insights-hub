@@ -8,7 +8,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 import { monthMap } from "@/utils/maps";
 
 const SpendChart = ({ lgaName, year }) => {

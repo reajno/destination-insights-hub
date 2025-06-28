@@ -8,10 +8,10 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 import { monthMap } from "@/utils/maps";
 
-import YearSelect from "./filters/YearSelect.jsx";
+import YearSelect from "../filters/YearSelect.jsx";
 
 const TestChart = ({ lgaName, year = "2024" }) => {
   const [data, setData] = useState([]);

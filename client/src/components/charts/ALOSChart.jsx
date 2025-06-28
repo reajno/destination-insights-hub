@@ -8,9 +8,9 @@ import {
   ResponsiveContainer,
   CartesianGrid,
 } from "recharts";
-import useAuth from "../../hooks/useAuth";
-import { monthMap } from "../utils/maps";
-import YearSelect from "./filters/YearSelect";
+import useAuth from "../../../hooks/useAuth";
+import { monthMap } from "../../utils/maps";
+import YearSelect from "../filters/YearSelect";
 
 const ALOSChart = ({ lgaName }) => {
   const { accessToken } = useAuth();

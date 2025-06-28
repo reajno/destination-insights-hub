@@ -8,9 +8,9 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import useAuth from "../../hooks/useAuth";
-import YearSelect from "./filters/YearSelect";
-import { monthMap } from "../utils/maps";
+import useAuth from "../../../hooks/useAuth";
+import YearSelect from "../filters/YearSelect";
+import { monthMap } from "../../utils/maps";
 
 const BookingWindowChart = ({ lgaName }) => {
   const { accessToken } = useAuth();

@@ -8,7 +8,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../../../hooks/useAuth";
 
 const formatDateAU = (isoDateStr) => {
   const [year, month, day] = isoDateStr.split("-");
@@ -74,10 +74,34 @@ const SummarySnapshotChart = ({ lgaName }) => {
               return [`$${Number(val).toLocaleString()}`, "Spend"];
             }}
           />
-          <Line yAxisId="left" type="monotone" dataKey="spend" stroke="#6366F1" dot={false} />
-          <Line yAxisId="right" type="monotone" dataKey="occupancy" stroke="#10B981" dot={false} />
-          <Line yAxisId="right" type="monotone" dataKey="adr" stroke="#F59E0B" dot={false} />
-          <Line yAxisId="right" type="monotone" dataKey="alos" stroke="#3B82F6" dot={false} />
+          <Line
+            yAxisId="left"
+            type="monotone"
+            dataKey="spend"
+            stroke="#6366F1"
+            dot={false}
+          />
+          <Line
+            yAxisId="right"
+            type="monotone"
+            dataKey="occupancy"
+            stroke="#10B981"
+            dot={false}
+          />
+          <Line
+            yAxisId="right"
+            type="monotone"
+            dataKey="adr"
+            stroke="#F59E0B"
+            dot={false}
+          />
+          <Line
+            yAxisId="right"
+            type="monotone"
+            dataKey="alos"
+            stroke="#3B82F6"
+            dot={false}
+          />
         </LineChart>
       </ResponsiveContainer>
     </div>
