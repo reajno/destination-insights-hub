@@ -4,15 +4,16 @@ import {
   Line,
   XAxis,
   YAxis,
-  Tooltip,
   CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
+  Legend,
 } from "recharts";
 import useAuth from "../../../hooks/useAuth";
 import { monthMap } from "@/utils/maps";
 import { Box } from "@chakra-ui/react";
 
-const SpendChart = ({ lgaName, year }) => {
+const ALOSChartA = ({ lgaName, year }) => {
   const [data, setData] = useState([]);
   const { accessToken, authError, isAuthLoading } = useAuth();
 
@@ -20,7 +21,7 @@ const SpendChart = ({ lgaName, year }) => {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/data/spend/${lgaName}/${year}`,
+          `http://localhost:3001/api/data/alos/${lgaName}/${year}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -31,11 +32,10 @@ const SpendChart = ({ lgaName, year }) => {
 
         if (authError) throw error;
 
-        const yearData = json.filter((item) => item.month !== "all");
-
-        const formatted = yearData.map((item) => ({
-          date: monthMap[item.month],
-          spend: parseFloat(item.spend),
+        const formatted = json.map((item) => ({
+          month: monthMap[item.month],
+          alos: parseFloat(item.alos),
+          abw: parseFloat(item.abw),
         }));
         setData(formatted);
       } catch (error) {
@@ -43,37 +43,38 @@ const SpendChart = ({ lgaName, year }) => {
         return;
       }
     };
+
     if (!isAuthLoading && lgaName && accessToken) fetchData();
   }, [year, lgaName, accessToken, isAuthLoading]);
+
   return (
     <Box w={"100%"}>
-      <ResponsiveContainer height={400}>
+      <ResponsiveContainer width="100%" height={200}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" angle={-45} textAnchor="end" />
-          <YAxis
-            tickFormatter={(value) =>
-              value >= 1_000_000_000
-                ? `$${(value / 1_000_000_000).toFixed(1)}B`
-                : `$${(value / 1_000_000).toFixed(0)}M`
-            }
-            domain={[500000000, 1000000000]}
-          />
+          <XAxis dataKey="month" angle={-45} textAnchor="end" />
+          <YAxis yAxisId="left" domain={[0, "auto"]} />
+          <YAxis yAxisId="right" orientation="right" domain={[0, "auto"]} />
           <Tooltip
             labelFormatter={() => ""}
-            formatter={(value) => [
-              `$${Number(value).toLocaleString(undefined, {
-                maximumFractionDigits: 0,
-              })}`,
-              "Spend",
-            ]}
+            formatter={(value) => value.toFixed(2) + " days"}
+          />
+          <Legend verticalAlign="top" />
+          <Line
+            yAxisId="left"
+            type="monotone"
+            dataKey="alos"
+            stroke="#6366f1"
+            name="ALOS"
+            strokeWidth={2}
           />
           <Line
+            yAxisId="right"
             type="monotone"
-            dataKey="spend"
-            stroke="#6366f1"
+            dataKey="abw"
+            stroke="#f97316"
+            name="ABW"
             strokeWidth={2}
-            dot
           />
         </LineChart>
       </ResponsiveContainer>
@@ -81,4 +82,4 @@ const SpendChart = ({ lgaName, year }) => {
   );
 };
 
-export default SpendChart;
+export default ALOSChartA;

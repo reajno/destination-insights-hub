@@ -1,69 +1,96 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
+  PieChart,
+  Pie,
+  Cell,
   Tooltip,
+  Legend,
   ResponsiveContainer,
-  CartesianGrid,
 } from "recharts";
 import useAuth from "../../../hooks/useAuth";
 import YearSelect from "../filters/YearSelect";
 import { monthMap } from "../../utils/maps";
+import { Box } from "@chakra-ui/react";
 
-const SpendBreakdownChart = ({ lgaName, year = "2024" }) => {
-  const { accessToken } = useAuth();
-  const [data, setData] = useState([]);
-  const [selectedYear, setSelectedYear] = useState(year);
+const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#d88484", "#00C49F"];
+
+const SpendBreakdownChart = ({ lgaName, year }) => {
+  const { accessToken, authError, isAuthLoading } = useAuth();
+  const [spendData, setSpendData] = useState([]);
+  const [txnsData, setTxnsData] = useState([]);
 
   useEffect(() => {
-    const fetchSpend = async () => {
+    const fetchData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/data/spend/${lgaName}/${selectedYear}`,
+          `http://localhost:3001/api/data/spend-breakdown/${lgaName}/${year}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
           }
         );
-        const raw = await res.json();
+        const json = await res.json();
 
-        const formatted = raw
-          .filter((item) => item.month !== "all")
-          .map((item) => ({
-            month: monthMap[item.month],
-            spend: Math.round(item.spend),
-          }));
+        if (authError) throw error;
 
-        setData(formatted);
+        const top5 = [...json].sort((a, b) => b.spend - a.spend).slice(0, 5);
+
+        // Format data for Recharts
+        setSpendData(
+          top5.map((item) => ({
+            name: item.category,
+            value: item.spend,
+          }))
+        );
+
+        setTxnsData(
+          top5.map((item) => ({
+            name: item.category,
+            value: item.no_txns,
+          }))
+        );
       } catch (err) {
         console.error("Error fetching spend data:", err);
       }
     };
 
-    if (lgaName && accessToken) {
-      fetchSpend();
-    }
-  }, [lgaName, selectedYear, accessToken]);
+    if (!isAuthLoading && lgaName && accessToken) fetchData();
+  }, [year, lgaName, accessToken, isAuthLoading]);
 
   return (
-    <div className="bg-white shadow rounded-xl p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Monthly Spend Breakdown</h2>
-        <YearSelect onYearChange={setSelectedYear} />
-      </div>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis tickFormatter={(v) => `$${v / 1_000_000}M`} />
-          <Tooltip formatter={(v) => `$${Number(v).toLocaleString()}`} />
-          <Bar dataKey="spend" fill="#6366F1" />
-        </BarChart>
+    <Box w={"100%"}>
+      <ResponsiveContainer height={400}>
+        <PieChart>
+          {/* Outer ring - Spend */}
+          <Pie
+            data={spendData}
+            dataKey="value"
+            nameKey="name"
+            outerRadius={80}
+            innerRadius={50}
+            label={({ name, value }) =>
+              value >= 1_000_000_000
+                ? `$${(value / 1_000_000_000).toFixed(1)}B`
+                : `$${(value / 1_000_000).toFixed(1)}M`
+            }>
+            {spendData.map((_, index) => (
+              <Cell key={`spend-${index}`} fill={COLORS[index]} />
+            ))}
+          </Pie>
+
+          <Tooltip
+            formatter={(value, name) => [
+              `$${Number(value).toLocaleString(undefined, {
+                maximumFractionDigits: 0,
+              })}`,
+              name,
+            ]}
+          />
+          <Legend />
+        </PieChart>
       </ResponsiveContainer>
-    </div>
+    </Box>
   );
 };
 

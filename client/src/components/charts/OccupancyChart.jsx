@@ -1,28 +1,30 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  ComposedChart,
-  Line,
+  BarChart,
   Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
+  Legend,
+  ComposedChart,
 } from "recharts";
 import useAuth from "../../../hooks/useAuth";
-import YearSelect from "../filters/YearSelect";
-import { monthMap } from "../../utils/maps";
+import { monthMap } from "@/utils/maps";
+import { Box } from "@chakra-ui/react";
 
-const OccupancyChart = ({ lgaName }) => {
-  const { accessToken } = useAuth();
+const OccupancyADRChart = ({ lgaName, year }) => {
   const [data, setData] = useState([]);
-  const [selectedYear, setSelectedYear] = useState("2023");
+  const { accessToken, authError, isAuthLoading } = useAuth();
 
   useEffect(() => {
-    const fetchOccupancy = async () => {
+    const fetchData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/data/occupancy/${lgaName}/${selectedYear}`,
+          `http://localhost:3001/api/data/occupancy/${lgaName}/${year}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -31,69 +33,67 @@ const OccupancyChart = ({ lgaName }) => {
         );
         const json = await res.json();
 
+        if (authError) throw new Error("Auth error");
+
         const formatted = json.map((item) => ({
-          month: monthMap[item.month.padStart(2, "0")],
-          occupancy: +(item.avg_occupancy * 100).toFixed(1),
-          adr: +item.avg_adr.toFixed(2),
+          month: monthMap[item.month],
+          avg_occupancy: parseFloat(item.avg_occupancy),
+          avg_adr: parseFloat(item.avg_adr),
         }));
 
         setData(formatted);
-      } catch (err) {
-        console.error("Error fetching occupancy data:", err);
+      } catch (error) {
+        console.error("Error fetching occupancy & ADR data:", error);
       }
     };
 
-    if (lgaName && accessToken) {
-      fetchOccupancy();
-    }
-  }, [lgaName, selectedYear, accessToken]);
+    if (!isAuthLoading && lgaName && accessToken) fetchData();
+  }, [year, lgaName, accessToken, isAuthLoading]);
 
   return (
-    <div className="bg-white shadow rounded-xl p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Occupancy and ADR</h2>
-        <YearSelect onYearChange={setSelectedYear} />
-      </div>
-      <ResponsiveContainer width="100%" height={300}>
+    <Box w={"100%"}>
+      <ResponsiveContainer width="100%" height={200}>
         <ComposedChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
+          <XAxis dataKey="month" angle={-45} textAnchor="end" />
           <YAxis
             yAxisId="left"
-            tickFormatter={(v) => `${v}%`}
-            domain={[0, 100]}
+            domain={[0, 1]}
+            tickFormatter={(value) => `${(value * 100).toFixed(0)}%`}
           />
-          <YAxis
-            yAxisId="right"
-            orientation="right"
-            tickFormatter={(v) => `$${v}`}
-          />
+          <YAxis yAxisId="right" orientation="right" domain={[250, 400]} />
           <Tooltip
-            formatter={(val, key) =>
-              key === "occupancy"
-                ? `${val}%`
-                : `$${Number(val).toLocaleString()}`
-            }
+            formatter={(value, name) => {
+              if (name === "AO") {
+                return [(value * 100).toFixed(1) + "%", "AO"];
+              }
+              if (name === "ADR") {
+                return [`$${value.toFixed(2)}`, "ADR"];
+              }
+              return [value, name];
+            }}
+            labelFormatter={() => ""}
           />
+          <Legend verticalAlign="top" />
           <Bar
             yAxisId="left"
-            dataKey="occupancy"
+            dataKey="avg_occupancy"
             fill="#6366f1"
-            name="Occupancy %"
+            name="AO"
           />
           <Line
             yAxisId="right"
             type="monotone"
-            dataKey="adr"
+            dataKey="avg_adr"
             stroke="#f97316"
+            name="ADR"
             strokeWidth={2}
             dot
-            name="ADR"
           />
         </ComposedChart>
       </ResponsiveContainer>
-    </div>
+    </Box>
   );
 };
 
-export default OccupancyChart;
+export default OccupancyADRChart;
