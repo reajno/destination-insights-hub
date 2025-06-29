@@ -123,8 +123,8 @@ data.get("/summary/:region", async (req, res) => {
 });
 
 // Metrics average from latest 7 data points (occupancy, adr, alos, spend)
-data.get("/metrics/:region", async (req, res) => {
-  const region = req.params.region;
+data.get("/metrics/:region/:year", async (req, res) => {
+  const { region, year } = req.params;
 
   try {
     const [
@@ -136,20 +136,20 @@ data.get("/metrics/:region", async (req, res) => {
         .from("spend_data")
         .select("spend")
         .ilike("lga_name", `%${region}%`)
-        .order("date", { ascending: false })
-        .limit(7),
+        .ilike("date", `%${year}%`)
+        .order("date", { ascending: false }),
       supabase
         .from("occupancy_data")
         .select("average_historical_occupancy, average_daily_rate")
         .ilike("lga_name", `%${region}%`)
-        .order("date", { ascending: false })
-        .limit(7),
+        .ilike("date", `%${year}%`)
+        .order("date", { ascending: false }),
       supabase
         .from("alos_data")
         .select("average_length_of_stay")
         .ilike("lga_name", `%${region}%`)
-        .order("date", { ascending: false })
-        .limit(7),
+        .ilike("date", `%${year}%`)
+        .order("date", { ascending: false }),
     ]);
 
     if (spendError || occupancyError || alosError) {
