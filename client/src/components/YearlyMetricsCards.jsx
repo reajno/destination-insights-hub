@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
+import { Grid, Box, Text, Flex } from "@chakra-ui/react";
+import DashboardCard from "./DashboardCard";
 
-const YearlyMetricsCards = ({ lgaName }) => {
+const YearlyMetricsCards = ({ lgaName, year }) => {
   const { accessToken } = useAuth();
   const [metrics, setMetrics] = useState(null);
 
@@ -9,7 +11,7 @@ const YearlyMetricsCards = ({ lgaName }) => {
     const fetchMetrics = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/data/metrics/${lgaName}`,
+          `http://localhost:3001/api/data/metrics/${lgaName}/${year}`,
           {
             headers: { Authorization: `Bearer ${accessToken}` },
           }
@@ -22,37 +24,54 @@ const YearlyMetricsCards = ({ lgaName }) => {
     };
 
     if (lgaName && accessToken) fetchMetrics();
-  }, [lgaName, accessToken]);
+  }, [lgaName, year, accessToken]);
 
   if (!metrics) return null;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <div className="bg-white p-4 rounded-xl shadow text-center">
-        <p className="text-sm text-gray-500">Total Spend</p>
-        <p className="text-xl font-bold text-blue-600">
-          ${Number(metrics.spend).toLocaleString()}
-        </p>
-      </div>
-      <div className="bg-white p-4 rounded-xl shadow text-center">
-        <p className="text-sm text-gray-500">Occupancy</p>
-        <p className="text-xl font-bold text-emerald-600">
+    <Grid
+      templateColumns={{
+        base: "1fr",
+        sm: "repeat(2, 1fr)",
+        lg: "repeat(4, 1fr)",
+      }}
+      gap={4}>
+      <DashboardCard>
+        <Text fontSize="sm" color="gray.500" textAlign="center">
+          Total Spend
+        </Text>
+        <Text fontSize="2xl" fontWeight="bold" color="blue.500">
+          {"$" + Number(metrics.spend).toLocaleString()}
+        </Text>
+      </DashboardCard>
+
+      <DashboardCard>
+        <Text fontSize="sm" color="gray.500" textAlign="center">
+          Occupancy Rate
+        </Text>
+        <Text fontSize="2xl" fontWeight="bold" color="green.500">
           {(metrics.occupancy * 100).toFixed(1)}%
-        </p>
-      </div>
-      <div className="bg-white p-4 rounded-xl shadow text-center">
-        <p className="text-sm text-gray-500">Average Daily Rate (ADR)</p>
-        <p className="text-xl font-bold text-orange-500">
-          ${Number(metrics.adr).toFixed(2)}
-        </p>
-      </div>
-      <div className="bg-white p-4 rounded-xl shadow text-center">
-        <p className="text-sm text-gray-500">ALOS</p>
-        <p className="text-xl font-bold text-indigo-500">
+        </Text>
+      </DashboardCard>
+
+      <DashboardCard>
+        <Text fontSize="sm" color="gray.500" textAlign="center">
+          Average Daily Rate (ADR)
+        </Text>
+        <Text fontSize="2xl" fontWeight="bold" color="orange.500">
+          {"$" + Number(metrics.adr).toFixed(2)}
+        </Text>
+      </DashboardCard>
+
+      <DashboardCard>
+        <Text fontSize="sm" color="gray.500" textAlign="center">
+          Average Length of Stay (ALOS)
+        </Text>
+        <Text fontSize="2xl" fontWeight="bold" color="purple.500">
           {Number(metrics.alos).toFixed(2)} days
-        </p>
-      </div>
-    </div>
+        </Text>
+      </DashboardCard>
+    </Grid>
   );
 };
 
