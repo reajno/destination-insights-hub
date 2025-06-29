@@ -3,24 +3,34 @@ import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { lgaMap } from "../utils/maps";
 import SpendBreakdownChart from "../components/charts/SpendBreakdownChart";
-import TestChart from "../components/charts/TestChart";
-import ALOSChart from "../components/charts/ALOSChart";
-import OccupancyChart from "../components/charts/OccupancyChart";
-import SummarySnapshotChart from "../components/charts/SummarySnapshotChart";
+import TestChart from "../components/charts/SpendChart";
+import OccupancyADRChart from "../components/charts/OccupancyChart";
 import YearlyMetricsCards from "../components/YearlyMetricsCards";
 import ExportButton from "../components/ExportButton";
 import NavSpacer from "@/components/nav/NavSpacer";
 import Container from "@/components/MainContainer";
-import { Box, Text, useBreakpointValue } from "@chakra-ui/react";
-import SidebarDesktop from "@/components/SidebarDesktop";
-import SidebarMobileDrawer from "@/components/SidebarMobileDrawer";
-
+import {
+  Box,
+  Text,
+  Flex,
+  useBreakpointValue,
+  Grid,
+  GridItem,
+} from "@chakra-ui/react";
+import SidebarDesktop from "@/components/sidebar/SidebarDesktop";
+import SidebarMobileDrawer from "@/components/sidebar/SidebarMobileDrawer";
+import YearSelect from "@/components/filters/YearSelect";
+import DashboardCard from "@/components/DashboardCard";
+import ALOSChartA from "@/components/charts/ALOSChartA";
+import SummarySnapshotChart from "@/components/charts/SummarySnapshotChart";
 const Dashboard = () => {
-  const { user, logout } = useAuth();
-  const [region, setRegion] = useState(user?.lga_name || "Cairns");
+  const { user, isAuthLoading, logout } = useAuth();
+  const [year, setYear] = useState("");
+  const [region, setRegion] = useState(user?.lga_name);
+
+  const isMobile = useBreakpointValue({ base: true, md: false });
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const isMobile = useBreakpointValue({ base: true, md: false });
 
   const handleLogout = () => {
     logout();
@@ -41,12 +51,106 @@ const Dashboard = () => {
           <SidebarMobileDrawer isMobile={isMobile} pathname={pathname} />
         )}
 
-        {/* DASHBOARD CONTENT */}
-        <Box flex="1" p={10}>
-          <Text fontSize="2xl" fontWeight="bold" color={"black"}>
-            Welcome to the Dashboard
-          </Text>
-        </Box>
+        {/* DASHBOARD CONTAINER*/}
+        {!isAuthLoading && (
+          <Flex p={6} gap={4} w="100%" flexDirection="column">
+            {/* HEADING: LGA + YEAR */}
+            <Flex>
+              {Object.keys(lgaMap)
+                .filter((lga) => lga === user?.lga_name)
+                .map((key) => (
+                  <Text
+                    key={key}
+                    h={"100%"}
+                    as="h1"
+                    fontSize="2xl"
+                    fontWeight="bold"
+                    whiteSpace="nowrap"
+                    color={"black"}
+                    pr={6}>
+                    {lgaMap[key].label}
+                  </Text>
+                ))}
+              <YearSelect onYearChange={setYear} />
+            </Flex>
+            {/* DASHBOARD CARDS*/}
+            {year && user?.lga_name && (
+              <Flex flexDirection="column" gap={4}>
+                {/* METRICS SUMMARY */}
+                <Box mb={4}>
+                  <Text
+                    as="h2"
+                    fontWeight="bold"
+                    fontSize="md"
+                    color={"black"}
+                    mb={4}>
+                    Key Metrics
+                  </Text>
+                  <YearlyMetricsCards lgaName={user?.lga_name} year={year} />
+                </Box>
+
+                {/* CHARTS */}
+                <Grid
+                  gap={4}
+                  templateColumns={{
+                    base: "1fr",
+                    lg: "repeat(7, 1fr)",
+                  }}>
+                  {" "}
+                  {/* YEAR SPEND  */}
+                  <GridItem colSpan={{ base: 1, lg: 4 }}>
+                    <DashboardCard w={"100%"} alignItems={"start"}>
+                      <Text as="h2" color="black" fontWeight="bold" mb={4}>
+                        Total Spend
+                      </Text>
+                      <TestChart lgaName={user?.lga_name} year={year} />
+                    </DashboardCard>
+                  </GridItem>
+                  {/* TOP SPEND CATEGORIES */}
+                  <GridItem colSpan={{ base: 1, lg: 3 }}>
+                    <DashboardCard alignItems={"start"}>
+                      <Text as="h2" color="black" fontWeight="bold" mb={4}>
+                        Top Spend Categories
+                      </Text>
+                      <SpendBreakdownChart
+                        lgaName={user?.lga_name}
+                        year={year}
+                      />
+                    </DashboardCard>
+                  </GridItem>
+                  {/* OCCUPANCY */}
+                  <GridItem colSpan={{ base: 1, lg: 3 }}>
+                    <DashboardCard w={"100%"} alignItems={"start"}>
+                      <Text as="h2" color="black" fontWeight="bold" mb={4}>
+                        Average Occupancy (AO) & Average Daily Rate (ADR)
+                      </Text>
+                      <OccupancyADRChart lgaName={user?.lga_name} year={year} />
+                    </DashboardCard>
+                  </GridItem>
+                  {/* ALOS */}
+                  <GridItem colSpan={{ base: 1, lg: 4 }}>
+                    <DashboardCard w={"100%"} alignItems={"start"}>
+                      <Text as="h2" color="black" fontWeight="bold" mb={4}>
+                        Average Length of Stay (ALOS) & Average Booking Window
+                        (ABW)
+                      </Text>
+                      <ALOSChartA lgaName={user?.lga_name} year={year} />
+                    </DashboardCard>
+                  </GridItem>
+                  {/* SPEND SUMMARY */}
+                  <GridItem colSpan={{ base: 1, lg: 7 }}>
+                    <DashboardCard w={"100%"} alignItems={"start"}>
+                      <Text as="h2" color="black" fontWeight="bold" mb={4}>
+                        Summary Snapshot
+                      </Text>
+                      <SummarySnapshotChart lgaName={user?.lga_name} />
+                    </DashboardCard>
+                  </GridItem>
+                </Grid>
+              </Flex>
+            )}
+          </Flex>
+        )}
       </Container>
     </>
   );
@@ -67,38 +171,6 @@ export default Dashboard;
 //       >
 //         Log Out
 //       </button> */}
-//     </div>
-
-//     {/* Region selector */}
-//     <div className="mb-4">
-//       <label className="mr-2 font-medium">Select Region:</label>
-//       <select
-//         className="border px-3 py-1 rounded-md"
-//         value={region}
-//         onChange={(e) => setRegion(e.target.value)}
-//       >
-//         {Object.keys(lgaMap).map((key) => (
-//           <option key={key} value={key}>
-//             {lgaMap[key].label}
-//           </option>
-//         ))}
-//       </select>
-//     </div>
-
-//     {/* Yearly Metrics Summary */}
-//     <div className="bg-white p-4 rounded-xl shadow mb-6">
-//       <h2 className="text-md font-medium text-gray-800 mb-2">
-//         Key Metrics (7-Week Average)
-//       </h2>
-//       <YearlyMetricsCards lgaName={region} />
-//     </div>
-
-//     {/* Monthly Spend Trend */}
-//     <div className="bg-white p-4 rounded-xl shadow mb-6">
-//       <h2 className="text-md font-medium text-gray-800 mb-2">
-//         Monthly Spend Trend
-//       </h2>
-//       <TestChart lgaName={region} />
 //     </div>
 
 //     {/* Spend Breakdown Chart */}
