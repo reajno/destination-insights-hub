@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { yearMap } from "@/utils/maps";
+import { NativeSelect } from "@chakra-ui/react";
 
 const YearSelect = ({ onYearChange }) => {
   const [year, setYear] = useState("2024");
@@ -17,21 +18,24 @@ const YearSelect = ({ onYearChange }) => {
   }, [year]);
 
   return (
-    <>
-      <select
-      className="border border-gray-300 px-3 py-2 rounded-md text-sm shadow-sm focus:ring focus:ring-blue-200"
+    <NativeSelect.Root w={"100px"}>
+      <NativeSelect.Field
         value={year}
-        onChange={(e) => {
-          setYear(e.target.value);
-        }}
-      >
+        onChange={(e) => setYear(e.target.value)}
+        border={"2px solid"}
+        borderColor={"gray.300"}
+        color={"black"}>
         {yearMap.map((year) => (
-        <option key={year} value={year}>
+          <option
+            key={year}
+            value={year}
+            style={{ color: "white", backgroundColor: "gray" }}>
             {year}
           </option>
         ))}
-      </select>
-    </>
+      </NativeSelect.Field>
+      <NativeSelect.Indicator />
+    </NativeSelect.Root>
   );
 };
 export default YearSelect;
