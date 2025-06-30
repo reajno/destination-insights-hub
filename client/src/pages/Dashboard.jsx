@@ -23,23 +23,20 @@ import YearSelect from "@/components/filters/YearSelect";
 import DashboardCard from "@/components/DashboardCard";
 import ALOSChartA from "@/components/charts/ALOSChartA";
 import SummarySnapshotChart from "@/components/charts/SummarySnapshotChart";
+import DateSelect from "@/components/filters/DateSelect";
+
 const Dashboard = () => {
   const { user, isAuthLoading, logout } = useAuth();
   const [year, setYear] = useState("");
-  const [region, setRegion] = useState(user?.lga_name);
+  const [date, setDate] = useState("");
 
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const navigate = useNavigate();
   const { pathname } = useLocation();
-
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
 
   return (
     <>
       <NavSpacer />
+
       <Container>
         {/* DESKTOP SIDEBAR*/}
         {!isMobile && (
@@ -53,9 +50,16 @@ const Dashboard = () => {
 
         {/* DASHBOARD CONTAINER*/}
         {!isAuthLoading && (
-          <Flex p={6} gap={4} w="100%" flexDirection="column">
+          <Box w={"100%"}>
             {/* HEADING: LGA + YEAR */}
-            <Flex>
+            <Flex
+              bg="gray.50"
+              position={"fixed"}
+              w={{ base: "100%", md: "calc(100% - 250px)" }}
+              p={6}
+              zIndex={1}
+              borderBottom={"4px solid"}
+              borderColor="gray.300">
               {Object.keys(lgaMap)
                 .filter((lga) => lga === user?.lga_name)
                 .map((key) => (
@@ -73,83 +77,95 @@ const Dashboard = () => {
                 ))}
               <YearSelect onYearChange={setYear} />
             </Flex>
-            {/* DASHBOARD CARDS*/}
-            {year && user?.lga_name && (
-              <Flex flexDirection="column" gap={4}>
-                {/* METRICS SUMMARY */}
-                <Box mb={4}>
-                  <Text
-                    as="h2"
-                    fontWeight="bold"
-                    fontSize="md"
-                    color={"black"}
-                    mb={4}>
-                    Key Metrics
-                  </Text>
-                  <YearlyMetricsCards lgaName={user?.lga_name} year={year} />
-                </Box>
+            <Box h={"92px"}></Box>
+            <Flex p={6} gap={4} w="100%" flexDirection="column">
+              {year && user?.lga_name && (
+                <Flex flexDirection="column" gap={4}>
+                  {/* METRICS SUMMARY */}
+                  <Box mb={4}>
+                    <Text
+                      as="h2"
+                      fontWeight="bold"
+                      fontSize="md"
+                      color={"black"}
+                      mb={4}>
+                      Key Metrics
+                    </Text>
+                    <YearlyMetricsCards lgaName={user?.lga_name} year={year} />
+                  </Box>
 
-                {/* CHARTS */}
-                <Grid
-                  gap={4}
-                  templateColumns={{
-                    base: "1fr",
-                    lg: "repeat(7, 1fr)",
-                  }}>
-                  {" "}
-                  {/* YEAR SPEND  */}
-                  <GridItem colSpan={{ base: 1, lg: 4 }}>
-                    <DashboardCard w={"100%"} alignItems={"start"}>
-                      <Text as="h2" color="black" fontWeight="bold" mb={4}>
-                        Total Spend
-                      </Text>
-                      <TestChart lgaName={user?.lga_name} year={year} />
-                    </DashboardCard>
-                  </GridItem>
-                  {/* TOP SPEND CATEGORIES */}
-                  <GridItem colSpan={{ base: 1, lg: 3 }}>
-                    <DashboardCard alignItems={"start"}>
-                      <Text as="h2" color="black" fontWeight="bold" mb={4}>
-                        Top Spend Categories
-                      </Text>
-                      <SpendBreakdownChart
-                        lgaName={user?.lga_name}
-                        year={year}
-                      />
-                    </DashboardCard>
-                  </GridItem>
-                  {/* OCCUPANCY */}
-                  <GridItem colSpan={{ base: 1, lg: 3 }}>
-                    <DashboardCard w={"100%"} alignItems={"start"}>
-                      <Text as="h2" color="black" fontWeight="bold" mb={4}>
-                        Average Occupancy (AO) & Average Daily Rate (ADR)
-                      </Text>
-                      <OccupancyADRChart lgaName={user?.lga_name} year={year} />
-                    </DashboardCard>
-                  </GridItem>
-                  {/* ALOS */}
-                  <GridItem colSpan={{ base: 1, lg: 4 }}>
-                    <DashboardCard w={"100%"} alignItems={"start"}>
-                      <Text as="h2" color="black" fontWeight="bold" mb={4}>
-                        Average Length of Stay (ALOS) & Average Booking Window
-                        (ABW)
-                      </Text>
-                      <ALOSChartA lgaName={user?.lga_name} year={year} />
-                    </DashboardCard>
-                  </GridItem>
-                  {/* SPEND SUMMARY */}
-                  <GridItem colSpan={{ base: 1, lg: 7 }}>
-                    <DashboardCard w={"100%"} alignItems={"start"}>
-                      <Text as="h2" color="black" fontWeight="bold" mb={4}>
-                        Summary Snapshot
-                      </Text>
-                      <SummarySnapshotChart lgaName={user?.lga_name} />
-                    </DashboardCard>
-                  </GridItem>
-                </Grid>
-              </Flex>
-            )}
-          </Flex>
+                  {/* CHARTS */}
+                  <Grid
+                    w="100%"
+                    gap={4}
+                    templateColumns={{
+                      base: "1fr",
+                      lg: "repeat(4, 1fr)",
+                    }}>
+                    {" "}
+                    {/* YEAR SPEND  */}
+                    <GridItem colSpan={{ base: 4, lg: 2 }}>
+                      <DashboardCard alignItems={"start"}>
+                        <Text as="h2" color="black" fontWeight="bold" mb={4}>
+                          Total Spend
+                        </Text>
+                        <TestChart lgaName={user?.lga_name} year={year} />
+                      </DashboardCard>
+                    </GridItem>
+                    {/* TOP SPEND CATEGORIES */}
+                    <GridItem colSpan={{ base: 4, lg: 2 }}>
+                      <DashboardCard alignItems={"start"}>
+                        <Text as="h2" color="black" fontWeight="bold" mb={4}>
+                          Top Spend Categories
+                        </Text>
+                        <SpendBreakdownChart
+                          lgaName={user?.lga_name}
+                          year={year}
+                        />
+                      </DashboardCard>
+                    </GridItem>
+                    {/* OCCUPANCY */}
+                    <GridItem colSpan={{ base: 4, lg: 2 }}>
+                      <DashboardCard alignItems={"start"}>
+                        <Text as="h2" color="black" fontWeight="bold" mb={4}>
+                          Average Occupancy (AO) & Average Daily Rate (ADR)
+                        </Text>
+                        <OccupancyADRChart
+                          lgaName={user?.lga_name}
+                          year={year}
+                        />
+                      </DashboardCard>
+                    </GridItem>
+                    {/* ALOS */}
+                    <GridItem colSpan={{ base: 4, lg: 2 }}>
+                      <DashboardCard alignItems={"start"}>
+                        <Text as="h2" color="black" fontWeight="bold" mb={4}>
+                          Average Length of Stay (ALOS) & Average Booking Window
+                          (ABW)
+                        </Text>
+                        <ALOSChartA lgaName={user?.lga_name} year={year} />
+                      </DashboardCard>
+                    </GridItem>
+                    {/* SPEND SUMMARY */}
+                    <GridItem colSpan={4}>
+                      <DashboardCard alignItems={"start"}>
+                        <Flex w="100%" justifyContent="space-between">
+                          <Text as="h2" color="black" fontWeight="bold" mb={4}>
+                            Summary Snapshot
+                          </Text>
+                          <DateSelect onDateChange={setDate} />
+                        </Flex>
+                        <SummarySnapshotChart
+                          lgaName={user?.lga_name}
+                          date={date}
+                        />
+                      </DashboardCard>
+                    </GridItem>
+                  </Grid>
+                </Flex>
+              )}
+            </Flex>
+          </Box>
         )}
       </Container>
     </>
