@@ -182,7 +182,7 @@ data.get("/metrics/:region/:year", async (req, res) => {
     res.json([
       {
         spend: spend.toFixed(0),
-        occupancy: occupancy.toFixed(1),
+        occupancy: occupancy.toFixed(3),
         adr: adr.toFixed(2),
         alos: alos.toFixed(2),
       },
