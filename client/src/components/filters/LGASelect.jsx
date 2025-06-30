@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { lgaMap } from "@/utils/maps";
+import { NativeSelect } from "@chakra-ui/react";
 
 const LGASelect = ({ onLGAChange }) => {
   const [lgaName, setLgaName] = useState("");
@@ -17,21 +18,27 @@ const LGASelect = ({ onLGAChange }) => {
   }, [lgaName]);
 
   return (
-    <>
-      <select
-        className="border border-gray-300 px-3 py-2 rounded-md text-sm shadow-sm focus:ring focus:ring-blue-200"
+    <NativeSelect.Root w={"200px"}>
+      <NativeSelect.Field
         value={lgaName}
-        onChange={(e) => {
-          setLgaName(e.target.value);
-        }}
-      >
+        onChange={(e) => setLgaName(e.target.value)}
+        border={"2px solid"}
+        borderColor={"gray.300"}
+        color={"black"}>
+        <option value="" disabled>
+          Choose Option
+        </option>
         {Object.keys(lgaMap).map((lga) => (
-          <option key={lga} value={lga}>
-            {lgaMap[lga].label}
+          <option
+            key={lga}
+            value={lga}
+            style={{ color: "white", backgroundColor: "gray" }}>
+            {lga}
           </option>
         ))}
-      </select>
-    </>
+      </NativeSelect.Field>
+      <NativeSelect.Indicator />
+    </NativeSelect.Root>
   );
 };
 export default LGASelect;
