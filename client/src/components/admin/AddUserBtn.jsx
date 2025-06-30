@@ -63,10 +63,9 @@ const AddUserBtn = ({ onUserAdded }) => {
       onOpenChange={(e) => {
         setIsOpen(e.open);
       }}
-      placement="center"
-    >
+      placement="center">
       <Dialog.Trigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="solid" colorPalette={"green"} size="sm">
           Add User
         </Button>
       </Dialog.Trigger>
@@ -113,8 +112,7 @@ const AddUserBtn = ({ onUserAdded }) => {
                     <InputField
                       mt={4}
                       required={true}
-                      label="Local Government Area"
-                    >
+                      label="Local Government Area">
                       <NativeSelect.Root>
                         <NativeSelect.Field
                           value={formData.lga_name}
@@ -123,8 +121,7 @@ const AddUserBtn = ({ onUserAdded }) => {
                               ...prev,
                               lga_name: e.target.value,
                             }))
-                          }
-                        >
+                          }>
                           <option value="" disabled>
                             Choose Option
                           </option>
@@ -190,8 +187,7 @@ const AddUserBtn = ({ onUserAdded }) => {
                               ...prev,
                               role: e.target.value,
                             }))
-                          }
-                        >
+                          }>
                           <option value="" disabled>
                             Choose Option
                           </option>
