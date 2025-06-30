@@ -26,6 +26,9 @@ const LGASelect = ({ onLGAChange }) => {
         borderColor={"gray.300"}
         color={"black"}
       >
+        <option value="" disabled>
+          Choose Option
+        </option>
         {Object.keys(lgaMap).map((lga) => (
           <option
             key={lga}
