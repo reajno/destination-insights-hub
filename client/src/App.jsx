@@ -14,6 +14,8 @@ import useAuth from "../hooks/useAuth";
 import useMicrotaskEffect from "../hooks/useMicrotaskEffect";
 import { toaster } from "@/components/chakra-ui/toaster";
 import { AdminProvider } from "../contexts/AdminContext";
+import analystLoader from "./utils/analystLoader";
+import DashboardCompare from "./pages/DashboardCompare";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +25,11 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home />, loader: homeLoader },
       { path: "/dashboard", element: <Dashboard />, loader: authLoader },
+      {
+        path: "/dashboard/compare",
+        element: <DashboardCompare />,
+        loader: analystLoader,
+      },
       {
         path: "/dashboard/admin",
         element: (

@@ -3,7 +3,7 @@ import useAuth from "../../hooks/useAuth";
 import { Grid, Box, Text, Flex } from "@chakra-ui/react";
 import DashboardCard from "./DashboardCard";
 
-const YearlyMetricsCards = ({ lgaName, year }) => {
+const YearlyMetricsCards = ({ lgaName, year, isCompare }) => {
   const { accessToken } = useAuth();
   const [metrics, setMetrics] = useState(null);
 
@@ -30,11 +30,15 @@ const YearlyMetricsCards = ({ lgaName, year }) => {
 
   return (
     <Grid
-      templateColumns={{
-        base: "1fr",
-        sm: "repeat(2, 1fr)",
-        lg: "repeat(4, 1fr)",
-      }}
+      templateColumns={
+        isCompare
+          ? "repeat(2, 1fr)"
+          : {
+              base: "1fr",
+              sm: "repeat(2, 1fr)",
+              lg: "repeat(4, 1fr)",
+            }
+      }
       gap={4}>
       <DashboardCard>
         <Text fontSize="sm" color="gray.500" textAlign="center">

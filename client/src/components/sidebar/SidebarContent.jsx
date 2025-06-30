@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../../hooks/useAuth";
 
 const SidebarContent = ({ isMobile, pathname }) => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -45,20 +45,39 @@ const SidebarContent = ({ isMobile, pathname }) => {
             </Button>
           </Link>
 
-          <Link to="/dashboard/admin">
-            <Button
-              w="100%"
-              justifyContent="flex-start"
-              colorPalette="green"
-              variant={pathname === "/dashboard/admin" ? "subtle" : "ghost"}
-              color={pathname === "/dashboard/admin" ? "white" : "black"}
-              _hover={{
-                bg: "green.800",
-                color: "white",
-              }}>
-              Admin
-            </Button>
-          </Link>
+          {user?.role !== "Operator" && (
+            <Link to="/dashboard/compare">
+              <Button
+                w="100%"
+                variant={pathname === "/dashboard/compare" ? "subtle" : "ghost"}
+                justifyContent="flex-start"
+                colorPalette="green"
+                color={pathname === "/dashboard/compare" ? "white" : "black"}
+                _hover={{
+                  bg: "green.800",
+                  color: "white",
+                }}>
+                Compare Regions
+              </Button>
+            </Link>
+          )}
+
+          {user?.role === "Admin" && (
+            <Link to="/dashboard/admin">
+              <Button
+                w="100%"
+                justifyContent="flex-start"
+                colorPalette="green"
+                variant={pathname === "/dashboard/admin" ? "subtle" : "ghost"}
+                color={pathname === "/dashboard/admin" ? "white" : "black"}
+                _hover={{
+                  bg: "green.800",
+                  color: "white",
+                }}>
+                Manage Users
+              </Button>
+            </Link>
+          )}
         </Flex>
 
         {/* SECONDARY MENU */}
