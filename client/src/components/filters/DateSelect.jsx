@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Input } from "@chakra-ui/react";
 
 const DateSelect = ({ onDateChange }) => {
   const [date, setDate] = useState("");
@@ -16,12 +17,16 @@ const DateSelect = ({ onDateChange }) => {
   }, [date]);
 
   return (
-    <input
+    <Input
+      w={40}
       type="date"
       name="datepicker"
       id="datepicker"
-      onChange={(e) => setDate(e.target.value)}
       value={date}
+      onChange={(e) => setDate(e.target.value)}
+      border={"2px solid"}
+      borderColor={"gray.300"}
+      color="black"
     />
   );
 };
