@@ -12,7 +12,7 @@ import useAuth from "../../../hooks/useAuth";
 import { monthMap } from "../../utils/maps";
 import YearSelect from "../filters/YearSelect";
 
-const ALOSChart = ({ lgaName }) => {
+const ALOSChart = ({ lgaName, year }) => {
   const { accessToken } = useAuth();
   const [data, setData] = useState([]);
   const [selectedYear, setSelectedYear] = useState("2023");

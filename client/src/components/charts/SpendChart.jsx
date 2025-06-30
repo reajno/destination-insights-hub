@@ -47,7 +47,7 @@ const SpendChart = ({ lgaName, year }) => {
   }, [year, lgaName, accessToken, isAuthLoading]);
   return (
     <Box w={"100%"}>
-      <ResponsiveContainer height={400}>
+      <ResponsiveContainer width="100%" height={400}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="date" angle={-45} textAnchor="end" />

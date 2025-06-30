@@ -1,110 +1,125 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  LineChart,
+  ResponsiveContainer,
+  ComposedChart,
+  Bar,
   Line,
   XAxis,
   YAxis,
   Tooltip,
+  Legend,
   CartesianGrid,
-  ResponsiveContainer,
 } from "recharts";
 import useAuth from "../../../hooks/useAuth";
+import { monthMap } from "@/utils/maps";
+import { Box, Flex, Text } from "@chakra-ui/react";
 
-const formatDateAU = (isoDateStr) => {
-  const [year, month, day] = isoDateStr.split("-");
-  return `${day}-${month}-${year}`;
-};
-
-const SummarySnapshotChart = ({ lgaName }) => {
-  const { accessToken } = useAuth();
+const SummarySnapshotChart = ({ lgaName, date }) => {
   const [data, setData] = useState([]);
+  const { accessToken, authError, isAuthLoading } = useAuth();
 
   useEffect(() => {
-    const fetchSnapshot = async () => {
+    const fetchData = async () => {
       try {
-        const defaultStartDate = "2024-01-01"; // earliest reliable data start
         const res = await fetch(
-          `http://localhost:3001/api/data/summary/${lgaName}?start=${defaultStartDate}`,
+          `http://localhost:3001/api/data/summary/${lgaName}?start=${date}`,
           {
-            headers: { Authorization: `Bearer ${accessToken}` },
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
           }
         );
         const json = await res.json();
 
-        // Just get last 14 rows
-        const recent = json.slice(-14);
+        if (authError) throw error;
 
-        const formatted = recent.map((item) => ({
-          date: formatDateAU(item.date),
+        const formatted = json.map((item) => ({
+          date: item.date,
           spend: item.spend,
-          occupancy: (item.average_historical_occupancy * 100).toFixed(1),
+          cards: item.cards_seen,
           adr: item.average_daily_rate,
-          alos: item.average_length_of_stay,
         }));
 
         setData(formatted);
-      } catch (err) {
-        console.error("Error fetching summary snapshot:", err);
+      } catch (error) {
+        console.error("Error fetching summary data:", error);
+        return;
       }
     };
-
-    if (lgaName && accessToken) fetchSnapshot();
-  }, [lgaName, accessToken]);
-
+    if (!isAuthLoading && lgaName && accessToken && date) fetchData();
+  }, [date, lgaName, accessToken, isAuthLoading]);
   return (
-    <div className="bg-white shadow rounded-xl p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">14-Day Snapshot</h2>
-      </div>
+    <Box w="100%">
       <ResponsiveContainer width="100%" height={300}>
-        <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" />
-          <YAxis yAxisId="left" tickFormatter={(v) => `$${v}`} />
-          <YAxis
-            yAxisId="right"
-            orientation="right"
-            tickFormatter={(v) => `${v}%`}
-          />
-          <Tooltip
-            formatter={(val, key) => {
-              if (key === "occupancy") return [`${val}%`, "Occupancy"];
-              if (key === "adr") return [`$${val}`, "ADR"];
-              if (key === "alos") return [`${val} days`, "ALOS"];
-              return [`$${Number(val).toLocaleString()}`, "Spend"];
-            }}
-          />
-          <Line
-            yAxisId="left"
-            type="monotone"
-            dataKey="spend"
-            stroke="#6366F1"
-            dot={false}
-          />
-          <Line
-            yAxisId="right"
-            type="monotone"
-            dataKey="occupancy"
-            stroke="#10B981"
-            dot={false}
-          />
-          <Line
-            yAxisId="right"
-            type="monotone"
-            dataKey="adr"
-            stroke="#F59E0B"
-            dot={false}
-          />
-          <Line
-            yAxisId="right"
-            type="monotone"
-            dataKey="alos"
-            stroke="#3B82F6"
-            dot={false}
-          />
-        </LineChart>
+        {!date && (
+          <Flex justifyContent="center" alignItems="center">
+            <Text as="p" color={"black"}>
+              {" "}
+              Please select date range to show ↗️
+            </Text>
+          </Flex>
+        )}
+        {date && (
+          <ComposedChart data={data} margin={{ left: 15, bottom: 30 }}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="date"
+              angle={-45}
+              textAnchor="end"
+              tickFormatter={(d) =>
+                new Date(d).toLocaleDateString("en-AU", {
+                  month: "short",
+                  day: "numeric",
+                })
+              }
+            />
+            <YAxis
+              yAxisId="left"
+              domain={[10000000, 300000000]}
+              tickFormatter={(value) =>
+                value >= 1_000_000
+                  ? `$${(value / 1_000_000).toFixed(0)}M`
+                  : `$${(value / 100_000).toFixed(0)}K`
+              }
+            />
+            <YAxis
+              yAxisId="right"
+              domain={[1000000, 5000000]}
+              orientation="right"
+              tickFormatter={(value) =>
+                value >= 1_000_000
+                  ? `${(value / 1_000_000).toFixed(0)}M`
+                  : `${(value / 100_000).toFixed(0)}K`
+              }
+            />
+            <Tooltip
+              labelFormatter={() => ""}
+              formatter={(value, name) => {
+                if (name === "Spend")
+                  return [
+                    `$${Number(value).toLocaleString(undefined, {
+                      maximumFractionDigits: 0,
+                    })}`,
+                    name,
+                  ];
+                if (name === "Unique Visitors")
+                  return [Number(value).toLocaleString(), name];
+              }}
+            />
+            <Legend verticalAlign="top" />
+
+            <Bar yAxisId="left" dataKey="spend" name="Spend" fill="#3b82f6" />
+            <Line
+              yAxisId="right"
+              dataKey="cards"
+              name="Unique Visitors"
+              stroke="#10b981"
+              strokeWidth={2}
+            />
+          </ComposedChart>
+        )}
       </ResponsiveContainer>
-    </div>
+    </Box>
   );
 };
 

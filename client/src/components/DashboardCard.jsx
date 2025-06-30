@@ -5,6 +5,7 @@ const DashboardCard = ({ children, ...props }) => {
     <Flex
       bg="white"
       p={4}
+      w={"100%"}
       rounded="md"
       boxShadow="md"
       flexDirection={"column"}

@@ -43,13 +43,6 @@ const SpendBreakdownChart = ({ lgaName, year }) => {
             value: item.spend,
           }))
         );
-
-        setTxnsData(
-          top5.map((item) => ({
-            name: item.category,
-            value: item.no_txns,
-          }))
-        );
       } catch (err) {
         console.error("Error fetching spend data:", err);
       }
@@ -60,7 +53,7 @@ const SpendBreakdownChart = ({ lgaName, year }) => {
 
   return (
     <Box w={"100%"}>
-      <ResponsiveContainer height={400}>
+      <ResponsiveContainer width="100%" height={400}>
         <PieChart>
           {/* Outer ring - Spend */}
           <Pie
