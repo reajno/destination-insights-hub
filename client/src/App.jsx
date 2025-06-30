@@ -8,12 +8,14 @@ import NotFound from "./pages/NotFound";
 import homeLoader from "./utils/homeLoader";
 import authLoader from "./utils/authLoader";
 import adminLoader from "./utils/adminLoader";
+import analystLoader from "./utils/analystLoader";
 import loginLoader from "./utils/loginLoader";
 import Admin from "./pages/Admin";
 import useAuth from "../hooks/useAuth";
 import useMicrotaskEffect from "../hooks/useMicrotaskEffect";
 import { toaster } from "@/components/chakra-ui/toaster";
 import { AdminProvider } from "../contexts/AdminContext";
+import DashboardAnalyst from "./pages/DashboardAnalyst";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +25,11 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home />, loader: homeLoader },
       { path: "/dashboard", element: <Dashboard />, loader: authLoader },
+      {
+        path: "/dashboard/compare",
+        element: <DashboardAnalyst />,
+        loader: analystLoader,
+      },
       {
         path: "/dashboard/admin",
         element: (

@@ -26,7 +26,7 @@ import SummarySnapshotChart from "@/components/charts/SummarySnapshotChart";
 import DashboardContent from "./DashboardContent";
 import LGASelect from "@/components/filters/LGASelectChakra";
 
-const Dashboard = () => {
+const DashboardAnalyst = () => {
   const { user, isAuthLoading } = useAuth();
   const [yearA, setYearA] = useState("");
   const [yearB, setYearB] = useState("");
@@ -77,4 +77,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardAnalyst;
