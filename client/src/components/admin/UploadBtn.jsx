@@ -53,7 +53,6 @@ const UploadBtn = () => {
     const result = await uploadToServer(form, formData.database);
 
     if (!result) return;
-    // Show success message
     toaster.create({
       description: result,
       type: "success",
@@ -63,7 +62,11 @@ const UploadBtn = () => {
   return (
     <Dialog.Root placement="center">
       <Dialog.Trigger asChild>
-        <Button variant="outline" size="sm">
+        <Button
+          variant="solid"
+          colorPalette={"orange"}
+          color={"white"}
+          size="sm">
           Upload CSV
         </Button>
       </Dialog.Trigger>
@@ -82,8 +85,7 @@ const UploadBtn = () => {
                   <NativeSelect.Field
                     name="database"
                     value={formData.database}
-                    onChange={handleSelectChange}
-                  >
+                    onChange={handleSelectChange}>
                     <option value="" disabled>
                       Choose Option
                     </option>
@@ -111,8 +113,7 @@ const UploadBtn = () => {
                 alignItems="stretch"
                 maxFiles={1}
                 accept={["text/csv"]}
-                onChange={handleFileChange}
-              >
+                onChange={handleFileChange}>
                 <FileUpload.HiddenInput />
 
                 <FileUpload.Dropzone mt={4}>
@@ -134,8 +135,7 @@ const UploadBtn = () => {
               <Button
                 colorPalette={"green"}
                 onClick={handleUpload}
-                disabled={formData.file && formData?.database ? false : true}
-              >
+                disabled={formData.file && formData?.database ? false : true}>
                 Upload
               </Button>
             </Dialog.Footer>
