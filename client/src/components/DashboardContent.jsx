@@ -1,16 +1,29 @@
 import SpendBreakdownChart from "../components/charts/SpendBreakdownChart";
 import SpendChart from "../components/charts/SpendChart";
-import OccupancyADRChart from "../components/charts/OccupancyChart";
+import OccupancyADRChart from "../components/charts/OccupancyADRChart";
 import YearlyMetricsCards from "../components/YearlyMetricsCards";
 import { Box, Text, Flex, Grid, GridItem } from "@chakra-ui/react";
 import DashboardCard from "@/components/DashboardCard";
-import ALOSChartA from "@/components/charts/ALOSChartA";
 import SummarySnapshotChart from "@/components/charts/SummarySnapshotChart";
 import DateSelect from "./filters/DateSelect";
 import { useState } from "react";
+import useMicrotaskEffect from "../../hooks/useMicrotaskEffect";
+import { toaster } from "./chakra-ui/toaster";
+import ALOSChart from "./charts/ALOSChart";
 
 const DashboardContent = ({ lgaName, year, isCompare = false }) => {
   const [date, setDate] = useState("");
+  const [fetchError, setFetchError] = useState(null);
+
+  useMicrotaskEffect(() => {
+    if (fetchError) {
+      toaster.create({
+        description: fetchError.message,
+        type: "error",
+      });
+    }
+    setFetchError(null);
+  }, [fetchError]);
 
   return (
     <Flex flexDirection="column" gap={4}>
@@ -23,6 +36,7 @@ const DashboardContent = ({ lgaName, year, isCompare = false }) => {
           lgaName={lgaName}
           year={year}
           isCompare={isCompare}
+          onFetchError={setFetchError}
         />
       </Box>
 
@@ -41,7 +55,11 @@ const DashboardContent = ({ lgaName, year, isCompare = false }) => {
             <Text as="h2" color="black" fontWeight="bold" mb={4}>
               Total Spend {isCompare && `- ${lgaName}`}
             </Text>
-            <SpendChart lgaName={lgaName} year={year} />
+            <SpendChart
+              lgaName={lgaName}
+              year={year}
+              onFetchError={setFetchError}
+            />
           </DashboardCard>
         </GridItem>
         {/* TOP SPEND CATEGORIES */}
@@ -50,7 +68,11 @@ const DashboardContent = ({ lgaName, year, isCompare = false }) => {
             <Text as="h2" color="black" fontWeight="bold" mb={4}>
               Top Spend Categories {isCompare && `- ${lgaName}`}
             </Text>
-            <SpendBreakdownChart lgaName={lgaName} year={year} />
+            <SpendBreakdownChart
+              lgaName={lgaName}
+              year={year}
+              onFetchError={setFetchError}
+            />
           </DashboardCard>
         </GridItem>
         {/* OCCUPANCY */}
@@ -60,7 +82,11 @@ const DashboardContent = ({ lgaName, year, isCompare = false }) => {
               Average Occupancy (AO) & Average Daily Rate (ADR){" "}
               {isCompare && `- ${lgaName}`}
             </Text>
-            <OccupancyADRChart lgaName={lgaName} year={year} />
+            <OccupancyADRChart
+              lgaName={lgaName}
+              year={year}
+              onFetchError={setFetchError}
+            />
           </DashboardCard>
         </GridItem>
         {/* ALOS */}
@@ -70,7 +96,11 @@ const DashboardContent = ({ lgaName, year, isCompare = false }) => {
               Average Length of Stay (ALOS) & Average Booking Window (ABW){" "}
               {isCompare && `- ${lgaName}`}
             </Text>
-            <ALOSChartA lgaName={lgaName} year={year} />
+            <ALOSChart
+              lgaName={lgaName}
+              year={year}
+              onFetchError={setFetchError}
+            />
           </DashboardCard>
         </GridItem>
         {/* SPEND SUMMARY */}
@@ -82,7 +112,11 @@ const DashboardContent = ({ lgaName, year, isCompare = false }) => {
               </Text>
               <DateSelect onDateChange={setDate} />
             </Flex>
-            <SummarySnapshotChart lgaName={lgaName} date={date} />
+            <SummarySnapshotChart
+              lgaName={lgaName}
+              date={date}
+              onFetchError={setFetchError}
+            />
           </DashboardCard>
         </GridItem>
       </Grid>

@@ -8,16 +8,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import useAuth from "../../../hooks/useAuth";
-import YearSelect from "../filters/YearSelect";
-import { monthMap } from "../../utils/maps";
 import { Box } from "@chakra-ui/react";
 
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#d88484", "#00C49F"];
 
-const SpendBreakdownChart = ({ lgaName, year }) => {
-  const { accessToken, authError, isAuthLoading } = useAuth();
+const SpendBreakdownChart = ({ lgaName, year, onFetchError }) => {
+  const { accessToken, isAuthLoading } = useAuth();
   const [spendData, setSpendData] = useState([]);
-  const [txnsData, setTxnsData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,19 +29,18 @@ const SpendBreakdownChart = ({ lgaName, year }) => {
         );
         const json = await res.json();
 
-        if (authError) throw error;
+        if (json.message) throw new Error(json.message);
 
         const top5 = [...json].sort((a, b) => b.spend - a.spend).slice(0, 5);
 
-        // Format data for Recharts
         setSpendData(
           top5.map((item) => ({
             name: item.category,
             value: item.spend,
           }))
         );
-      } catch (err) {
-        console.error("Error fetching spend data:", err);
+      } catch (error) {
+        onFetchError(error);
       }
     };
 
@@ -55,14 +51,13 @@ const SpendBreakdownChart = ({ lgaName, year }) => {
     <Box w={"100%"}>
       <ResponsiveContainer width="100%" height={400}>
         <PieChart>
-          {/* Outer ring - Spend */}
           <Pie
             data={spendData}
             dataKey="value"
             nameKey="name"
             outerRadius={80}
             innerRadius={50}
-            label={({ name, value }) =>
+            label={({ value }) =>
               value >= 1_000_000_000
                 ? `$${(value / 1_000_000_000).toFixed(1)}B`
                 : `$${(value / 1_000_000).toFixed(1)}M`

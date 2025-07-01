@@ -12,9 +12,9 @@ import useAuth from "../../../hooks/useAuth";
 import { monthMap } from "@/utils/maps";
 import { Box } from "@chakra-ui/react";
 
-const SpendChart = ({ lgaName, year }) => {
+const SpendChart = ({ lgaName, year, onFetchError }) => {
   const [data, setData] = useState([]);
-  const { accessToken, authError, isAuthLoading } = useAuth();
+  const { accessToken, isAuthLoading } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,7 +29,7 @@ const SpendChart = ({ lgaName, year }) => {
         );
         const json = await res.json();
 
-        if (authError) throw error;
+        if (json.message) throw new Error(json.message);
 
         const yearData = json.filter((item) => item.month !== "all");
 
@@ -39,8 +39,7 @@ const SpendChart = ({ lgaName, year }) => {
         }));
         setData(formatted);
       } catch (error) {
-        console.error("Error fetching user data:", error);
-        return;
+        onFetchError(error);
       }
     };
     if (!isAuthLoading && lgaName && accessToken) fetchData();
@@ -57,7 +56,10 @@ const SpendChart = ({ lgaName, year }) => {
                 ? `$${(value / 1_000_000_000).toFixed(1)}B`
                 : `$${(value / 1_000_000).toFixed(0)}M`
             }
-            domain={[500000000, 1000000000]}
+            domain={([min, max]) => {
+              const padding = (max - min) * 0.1; // 10% headroom
+              return [min - padding, max + padding];
+            }}
           />
           <Tooltip
             labelFormatter={() => ""}

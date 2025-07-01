@@ -1,27 +1,27 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LineChart,
   Line,
   XAxis,
   YAxis,
+  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  CartesianGrid,
+  Legend,
 } from "recharts";
 import useAuth from "../../../hooks/useAuth";
-import { monthMap } from "../../utils/maps";
-import YearSelect from "../filters/YearSelect";
+import { monthMap } from "@/utils/maps";
+import { Box } from "@chakra-ui/react";
 
-const ALOSChart = ({ lgaName, year }) => {
-  const { accessToken } = useAuth();
+const ALOSChart = ({ lgaName, year, onFetchError }) => {
   const [data, setData] = useState([]);
-  const [selectedYear, setSelectedYear] = useState("2023");
+  const { accessToken, isAuthLoading } = useAuth();
 
   useEffect(() => {
-    const fetchALOS = async () => {
+    const fetchData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/data/alos/${lgaName}/${selectedYear}`,
+          `http://localhost:3001/api/data/alos/${lgaName}/${year}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -30,44 +30,54 @@ const ALOSChart = ({ lgaName, year }) => {
         );
         const json = await res.json();
 
-        const formatted = json.map((item) => ({
-          month: monthMap[item.month.padStart(2, "0")],
-          alos: parseFloat(item.alos),
-        }));
+        if (json.message) throw new Error(json.message);
 
+        const formatted = json.map((item) => ({
+          month: monthMap[item.month],
+          alos: parseFloat(item.alos),
+          abw: parseFloat(item.abw),
+        }));
         setData(formatted);
-      } catch (err) {
-        console.error("Error fetching ALOS data:", err);
+      } catch (error) {
+        onFetchError(error);
       }
     };
 
-    if (lgaName && accessToken) {
-      fetchALOS();
-    }
-  }, [lgaName, selectedYear, accessToken]);
+    if (!isAuthLoading && lgaName && accessToken) fetchData();
+  }, [year, lgaName, accessToken, isAuthLoading]);
 
   return (
-    <div className="bg-white shadow rounded-xl p-4">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Average Length of Stay (ALOS)</h2>
-        <YearSelect onYearChange={setSelectedYear} />
-      </div>
-      <ResponsiveContainer width="100%" height={300}>
+    <Box w={"100%"}>
+      <ResponsiveContainer width="100%" height={200}>
         <LineChart data={data}>
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis tickFormatter={(v) => `${v.toFixed(1)} days`} />
-          <Tooltip formatter={(v) => `${v.toFixed(2)} days`} />
+          <XAxis dataKey="month" angle={-45} textAnchor="end" />
+          <YAxis yAxisId="left" domain={[0, "auto"]} />
+          <YAxis yAxisId="right" orientation="right" domain={[0, "auto"]} />
+          <Tooltip
+            labelFormatter={() => ""}
+            formatter={(value) => value.toFixed(2) + " days"}
+          />
+          <Legend verticalAlign="top" />
           <Line
+            yAxisId="left"
             type="monotone"
             dataKey="alos"
-            stroke="#10B981"
+            stroke="#6366f1"
+            name="ALOS"
             strokeWidth={2}
-            dot
+          />
+          <Line
+            yAxisId="right"
+            type="monotone"
+            dataKey="abw"
+            stroke="#f97316"
+            name="ABW"
+            strokeWidth={2}
           />
         </LineChart>
       </ResponsiveContainer>
-    </div>
+    </Box>
   );
 };
 

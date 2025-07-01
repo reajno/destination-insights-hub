@@ -11,12 +11,11 @@ import {
   CartesianGrid,
 } from "recharts";
 import useAuth from "../../../hooks/useAuth";
-import { monthMap } from "@/utils/maps";
 import { Box, Flex, Text } from "@chakra-ui/react";
 
-const SummarySnapshotChart = ({ lgaName, date }) => {
+const SummarySnapshotChart = ({ lgaName, date, onFetchError }) => {
   const [data, setData] = useState([]);
-  const { accessToken, authError, isAuthLoading } = useAuth();
+  const { accessToken, isAuthLoading } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,9 +28,10 @@ const SummarySnapshotChart = ({ lgaName, date }) => {
             },
           }
         );
+
         const json = await res.json();
 
-        if (authError) throw error;
+        if (json.message) throw new Error(json.message);
 
         const formatted = json.map((item) => ({
           date: item.date,
@@ -42,8 +42,7 @@ const SummarySnapshotChart = ({ lgaName, date }) => {
 
         setData(formatted);
       } catch (error) {
-        console.error("Error fetching summary data:", error);
-        return;
+        onFetchError(error);
       }
     };
     if (!isAuthLoading && lgaName && accessToken && date) fetchData();
@@ -75,21 +74,24 @@ const SummarySnapshotChart = ({ lgaName, date }) => {
             />
             <YAxis
               yAxisId="left"
-              domain={[10000000, 300000000]}
+              domain={([min, max]) => {
+                const padding = (max - min) * 0.1; // 10% headroom
+                return [min - padding, max + padding];
+              }}
               tickFormatter={(value) =>
                 value >= 1_000_000
                   ? `$${(value / 1_000_000).toFixed(0)}M`
-                  : `$${(value / 100_000).toFixed(0)}K`
+                  : `$${(value / 1000).toFixed(0)}K`
               }
             />
             <YAxis
               yAxisId="right"
-              domain={[1000000, 5000000]}
+              domain={["auto"]}
               orientation="right"
               tickFormatter={(value) =>
                 value >= 1_000_000
                   ? `${(value / 1_000_000).toFixed(0)}M`
-                  : `${(value / 100_000).toFixed(0)}K`
+                  : `${(value / 1000).toFixed(0)}K`
               }
             />
             <Tooltip

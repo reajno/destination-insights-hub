@@ -16,9 +16,9 @@ import useAuth from "../../../hooks/useAuth";
 import { monthMap } from "@/utils/maps";
 import { Box } from "@chakra-ui/react";
 
-const OccupancyADRChart = ({ lgaName, year }) => {
+const OccupancyADRChart = ({ lgaName, year, onFetchError }) => {
   const [data, setData] = useState([]);
-  const { accessToken, authError, isAuthLoading } = useAuth();
+  const { accessToken, isAuthLoading } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +33,7 @@ const OccupancyADRChart = ({ lgaName, year }) => {
         );
         const json = await res.json();
 
-        if (authError) throw new Error("Auth error");
+        if (json.message) throw new Error(json.message);
 
         const formatted = json.map((item) => ({
           month: monthMap[item.month],
@@ -43,7 +43,7 @@ const OccupancyADRChart = ({ lgaName, year }) => {
 
         setData(formatted);
       } catch (error) {
-        console.error("Error fetching occupancy & ADR data:", error);
+        onFetchError(error);
       }
     };
 
@@ -61,8 +61,16 @@ const OccupancyADRChart = ({ lgaName, year }) => {
             domain={[0, 1]}
             tickFormatter={(value) => `${(value * 100).toFixed(0)}%`}
           />
-          <YAxis yAxisId="right" orientation="right" domain={[250, 400]} />
+          <YAxis
+            yAxisId="right"
+            orientation="right"
+            domain={([min, max]) => {
+              const padding = (max - min) * 0.1; // 10% headroom
+              return [(min - padding).toFixed(0), (max + padding).toFixed(0)];
+            }}
+          />
           <Tooltip
+            labelFormatter={() => ""}
             formatter={(value, name) => {
               if (name === "AO") {
                 return [(value * 100).toFixed(1) + "%", "AO"];
@@ -72,7 +80,6 @@ const OccupancyADRChart = ({ lgaName, year }) => {
               }
               return [value, name];
             }}
-            labelFormatter={() => ""}
           />
           <Legend verticalAlign="top" />
           <Bar

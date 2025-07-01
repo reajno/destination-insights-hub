@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import { Grid, Box, Text, Flex } from "@chakra-ui/react";
+import { Grid, Text } from "@chakra-ui/react";
 import DashboardCard from "./DashboardCard";
 
-const YearlyMetricsCards = ({ lgaName, year, isCompare }) => {
-  const { accessToken } = useAuth();
+const YearlyMetricsCards = ({ lgaName, year, onFetchError, isCompare }) => {
+  const { accessToken, isAuthLoading } = useAuth();
   const [metrics, setMetrics] = useState(null);
 
   useEffect(() => {
@@ -17,14 +17,15 @@ const YearlyMetricsCards = ({ lgaName, year, isCompare }) => {
           }
         );
         const json = await res.json();
+
         setMetrics(json[0]); // API returns array with one object
-      } catch (err) {
-        console.error("Error fetching metrics summary:", err);
+      } catch (error) {
+        onFetchError(error);
       }
     };
 
-    if (lgaName && accessToken) fetchMetrics();
-  }, [lgaName, year, accessToken]);
+    if (!isAuthLoading && lgaName && accessToken) fetchMetrics();
+  }, [year, lgaName, accessToken, isAuthLoading]);
 
   if (!metrics) return null;
 
