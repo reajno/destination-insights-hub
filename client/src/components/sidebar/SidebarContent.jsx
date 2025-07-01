@@ -1,14 +1,52 @@
 import { Flex, Button, Box } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../../../hooks/useAuth";
+import { Link, useLocation } from "react-router-dom";
 
-const SidebarContent = ({ isMobile, pathname }) => {
+import useAuth from "../../../hooks/useAuth";
+import jsPDF from "jspdf";
+import domtoimage from "dom-to-image";
+
+const SidebarContent = ({ isMobile }) => {
   const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   const handleLogout = async () => {
     await logout();
     navigate("/", { replace: true });
+  };
+
+  const handleExportPDF = async () => {
+    const element = document.getElementById("dashboard-content");
+
+    if (!element) {
+      console.error("Dashboard content not found.");
+      return;
+    }
+
+    try {
+      const dataUrl = await domtoimage.toPng(element);
+
+      const img = new Image();
+      img.src = dataUrl;
+
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+
+      img.onload = () => {
+        const pageWidth = pdf.internal.pageSize.getWidth();
+
+        const ratio = img.width / img.height;
+        const pdfWidth = pageWidth;
+        const pdfHeight = pdfWidth / ratio;
+
+        pdf.addImage(dataUrl, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save("dashboard.pdf");
+      };
+    } catch (error) {
+      console.error("PDF export failed:", error);
+    }
   };
 
   return (
@@ -29,55 +67,56 @@ const SidebarContent = ({ isMobile, pathname }) => {
           boxShadow: "inset -4px 0 8px -4px rgba(0, 0, 0, 0.1)",
         }}>
         {/* PRIMARY MENU */}
+
         <Flex gap={2} flexDirection="column">
-          <Link to="/dashboard">
+          <Button
+            as={Link}
+            to="/dashboard"
+            w="100%"
+            variant={pathname === "/dashboard" ? "subtle" : "ghost"}
+            justifyContent="flex-start"
+            colorPalette="green"
+            color={pathname === "/dashboard" ? "white" : "black"}
+            _hover={{
+              bg: "green.800",
+              color: "white",
+            }}>
+            Dashboard
+          </Button>
+
+          {user?.role !== "Operator" ? (
             <Button
+              as={Link}
+              to="/dashboard/compare"
               w="100%"
-              variant={pathname === "/dashboard" ? "subtle" : "ghost"}
+              variant={pathname === "/dashboard/compare" ? "subtle" : "ghost"}
               justifyContent="flex-start"
               colorPalette="green"
-              color={pathname === "/dashboard" ? "white" : "black"}
+              color={pathname === "/dashboard/compare" ? "white" : "black"}
               _hover={{
                 bg: "green.800",
                 color: "white",
               }}>
-              Dashboard
+              Compare Regions
             </Button>
-          </Link>
+          ) : null}
 
-          {user?.role !== "Operator" && (
-            <Link to="/dashboard/compare">
-              <Button
-                w="100%"
-                variant={pathname === "/dashboard/compare" ? "subtle" : "ghost"}
-                justifyContent="flex-start"
-                colorPalette="green"
-                color={pathname === "/dashboard/compare" ? "white" : "black"}
-                _hover={{
-                  bg: "green.800",
-                  color: "white",
-                }}>
-                Compare Regions
-              </Button>
-            </Link>
-          )}
-
-          {user?.role === "Admin" && (
-            <Link to="/dashboard/admin">
-              <Button
-                w="100%"
-                justifyContent="flex-start"
-                colorPalette="green"
-                variant={pathname === "/dashboard/admin" ? "subtle" : "ghost"}
-                color={pathname === "/dashboard/admin" ? "white" : "black"}
-                _hover={{
-                  bg: "green.800",
-                  color: "white",
-                }}>
-                Manage Users
-              </Button>
-            </Link>
-          )}
+          {user?.role === "Admin" ? (
+            <Button
+              as={Link}
+              to="/dashboard/admin"
+              w="100%"
+              justifyContent="flex-start"
+              colorPalette="green"
+              variant={pathname === "/dashboard/admin" ? "subtle" : "ghost"}
+              color={pathname === "/dashboard/admin" ? "white" : "black"}
+              _hover={{
+                bg: "green.800",
+                color: "white",
+              }}>
+              Manage Users
+            </Button>
+          ) : null}
         </Flex>
 
         {/* SECONDARY MENU */}
@@ -91,7 +130,8 @@ const SidebarContent = ({ isMobile, pathname }) => {
             _hover={{
               bg: "green.800",
               color: "white",
-            }}>
+            }}
+            onClick={handleExportPDF}>
             Export PDF
           </Button>
           {/* BOTTOM SEPARATOR */}
