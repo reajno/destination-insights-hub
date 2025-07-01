@@ -1,24 +1,9 @@
 import { Router } from "express";
 import { supabase } from "../supabaseClient.js";
 
-// Turned off for dev purposes (🔐 = Auth will be required)
 import requireAuth from "../middleware/requireAuth.js";
 
 const data = Router();
-
-// All spend data (unchanged)
-data.get("/spend", async (req, res) => {
-  try {
-    const { data: spend_data, error } = await supabase
-      .from("spend_data")
-      .select("*");
-
-    if (error || spend_data.length === 0) throw error;
-    res.json(spend_data);
-  } catch (error) {
-    res.status(500).json({ message: "Failed to fetch spend data" });
-  }
-});
 
 // 🔐 Monthly Spend Trends + Year Total
 data.get("/spend/:region/:year", requireAuth, async (req, res) => {
@@ -41,7 +26,7 @@ data.get("/spend/:region/:year", requireAuth, async (req, res) => {
   }
 });
 
-// 🔐 Monzthly Occupancy Trends
+// 🔐 Monthly Occupancy Trends
 data.get("/occupancy/:region/:year", requireAuth, async (req, res) => {
   const { region, year } = req.params;
 
@@ -118,7 +103,9 @@ data.get("/summary/:region", async (req, res) => {
     if (error || data.length === 0) throw error;
     res.json(data);
   } catch (error) {
-    res.status(500).json({ message: "Failed to fetch summary data" });
+    res.status(500).json({
+      message: "Failed to fetch summary data: Selected date might be invalid",
+    });
   }
 });
 
