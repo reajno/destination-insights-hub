@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
-import useMicrotaskEffect from "../../hooks/useMicrotaskEffect";
-import useAuth from "../../hooks/useAuth";
-import useAdmin from "../../hooks/useAdmin";
 import { Box, Table, Flex } from "@chakra-ui/react";
 import { toaster } from "@/components/chakra-ui/toaster";
+
 import RemoveUserBtn from "@/components/admin/RemoveUserBtn";
 import AddUserBtn from "@/components/admin/AddUserBtn";
 import UploadBtn from "@/components/admin/UploadBtn";
+
+import useAuth from "../../hooks/useAuth";
+import useAdmin from "../../hooks/useAdmin";
+import useMicrotaskEffect from "../../hooks/useMicrotaskEffect";
 
 const Admin = () => {
   const [tableData, setTableData] = useState([]);
   const { user } = useAuth();
   const { fetchUsers, adminError } = useAdmin();
 
+  // Show toast for admin related errors
   useMicrotaskEffect(() => {
     if (adminError) {
       toaster.create({

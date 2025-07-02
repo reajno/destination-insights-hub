@@ -9,31 +9,28 @@ export const monthMap = {
   "07": "Jul",
   "08": "Aug",
   "09": "Sep",
-  "10": "Oct",
-  "11": "Nov",
-  "12": "Dec",
+  10: "Oct",
+  11: "Nov",
+  12: "Dec",
 };
 
 // Local Government Areas (LGAs) and their associated themes and labels
 export const lgaMap = {
   "Gold Coast": {
-    theme: "bg-yellow-50",
     label: "🏖️ Gold Coast",
   },
   Cairns: {
-    theme: "bg-green-50",
     label: "🌴 Cairns",
   },
   Noosa: {
-    theme: "bg-blue-50",
     label: "🌊 Noosa",
   },
   Whitsundays: {
-    theme: "bg-indigo-50",
     label: "⛵ Whitsundays",
   },
 };
 
+// database tables and their associated headers - used for validation in CSV uploads
 export const databaseMap = {
   Spend: {
     name: "spend_data",

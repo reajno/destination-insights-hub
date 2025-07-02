@@ -1,6 +1,6 @@
 import { Box } from "@chakra-ui/react";
 
-const NavSpacer = () => {
+const HeaderSpacer = () => {
   return <Box h="5rem" />;
 };
-export default NavSpacer;
+export default HeaderSpacer;

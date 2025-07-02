@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { Box, Flex, useBreakpointValue } from "@chakra-ui/react";
+import { Box, useBreakpointValue } from "@chakra-ui/react";
 
 import useAuth from "../../hooks/useAuth";
-import NavSpacer from "@/components/nav/NavSpacer";
+import HeaderSpacer from "@/components/header/HeaderSpacer";
 import MainContainer from "@/components/MainContainer";
 import SidebarDesktop from "@/components/sidebar/SidebarDesktop";
 import SidebarMobileDrawer from "@/components/sidebar/SidebarMobileDrawer";
@@ -16,7 +15,7 @@ const DashboardLayout = () => {
 
   return (
     <>
-      <NavSpacer />
+      <HeaderSpacer />
       <MainContainer>
         {!isMobile && <SidebarDesktop isMobile={isMobile} />}
         {isMobile && <SidebarMobileDrawer isMobile={isMobile} />}

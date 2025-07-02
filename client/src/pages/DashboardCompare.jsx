@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
-import { Box, Flex, Grid, Spacer, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Flex, Grid, Spacer } from "@chakra-ui/react";
 import LGASelect from "@/components/filters/LGASelect";
 import YearSelect from "@/components/filters/YearSelect";
 import DashboardContent from "@/components/DashboardContent";
@@ -13,7 +13,8 @@ const DashboardCompare = () => {
   const [lgaNameB, setLgaNameB] = useState("");
 
   return (
-    <Box w={"100%"}>
+    <>
+      {/* FIXED HEADER */}
       <Flex
         bg="gray.50"
         justifyContent="space-between"
@@ -23,11 +24,13 @@ const DashboardCompare = () => {
         zIndex={1}
         borderBottom="4px solid"
         borderColor="gray.300">
+        {/* HEADER - DASHBOARD A */}
         <Flex gap={4}>
           <LGASelect onLGAChange={setLgaNameA} />
           <YearSelect onYearChange={setYearA} />
         </Flex>
         <Spacer />
+        {/* HEADER - DASHBOARD B */}
         <Flex gap={4}>
           <LGASelect onLGAChange={setLgaNameB} />
           <YearSelect onYearChange={setYearB} />
@@ -51,7 +54,7 @@ const DashboardCompare = () => {
           <DashboardContent lgaName={lgaNameB} year={yearB} isCompare={true} />
         )}
       </Grid>
-    </Box>
+    </>
   );
 };
 

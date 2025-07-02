@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import useAuth from "../../hooks/useAuth";
 import { Grid, Text } from "@chakra-ui/react";
+import useAuth from "../../hooks/useAuth";
 import DashboardCard from "./DashboardCard";
 
 const YearlyMetricsCards = ({ lgaName, year, onFetchError, isCompare }) => {

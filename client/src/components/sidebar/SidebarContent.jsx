@@ -1,6 +1,5 @@
 import { Flex, Button, Box } from "@chakra-ui/react";
 import { Link, useLocation } from "react-router-dom";
-
 import useAuth from "../../../hooks/useAuth";
 import jsPDF from "jspdf";
 import domtoimage from "dom-to-image";
@@ -11,7 +10,6 @@ const SidebarContent = ({ isMobile }) => {
 
   const handleLogout = async () => {
     await logout();
-    navigate("/", { replace: true });
   };
 
   const handleExportPDF = async () => {
@@ -23,11 +21,13 @@ const SidebarContent = ({ isMobile }) => {
     }
 
     try {
+      // Convert dashboard content to PNG
       const dataUrl = await domtoimage.toPng(element);
 
       const img = new Image();
       img.src = dataUrl;
 
+      // Create PDF
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
@@ -67,7 +67,6 @@ const SidebarContent = ({ isMobile }) => {
           boxShadow: "inset -4px 0 8px -4px rgba(0, 0, 0, 0.1)",
         }}>
         {/* PRIMARY MENU */}
-
         <Flex gap={2} flexDirection="column">
           <Button
             as={Link}
@@ -135,7 +134,7 @@ const SidebarContent = ({ isMobile }) => {
             Export PDF
           </Button>
           {/* BOTTOM SEPARATOR */}
-          <Box bg="white" w="100%" h={"2px"} />
+          <Box bg="black" w="100%" h={"2px"} />
           <Button
             w="100%"
             justifyContent="flex-start"

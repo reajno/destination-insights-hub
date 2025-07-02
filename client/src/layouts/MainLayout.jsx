@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
-import NavBar from "@/components/nav/NavBar";
 import { Toaster } from "@/components/chakra-ui/toaster";
+import HeaderBar from "@/components/header/HeaderBar";
 
 const MainLayout = () => {
   return (
     <>
-      <NavBar />
+      <HeaderBar />
       <Toaster />
       <Outlet />
     </>

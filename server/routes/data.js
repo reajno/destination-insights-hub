@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { supabase } from "../supabaseClient.js";
-
 import requireAuth from "../middleware/requireAuth.js";
 
 const data = Router();
@@ -68,8 +67,8 @@ data.get("/alos/:region/:year", requireAuth, async (req, res) => {
   }
 });
 
-// Spend Breakdown by Category
-data.get("/spend-breakdown/:region/:year", async (req, res) => {
+// 🔐 Spend Breakdown by Category
+data.get("/spend-breakdown/:region/:year", requireAuth, async (req, res) => {
   const { region, year } = req.params;
 
   try {
@@ -88,8 +87,8 @@ data.get("/spend-breakdown/:region/:year", async (req, res) => {
   }
 });
 
-// 2-week summary for a region based on start date
-data.get("/summary/:region", async (req, res) => {
+// 🔐 2-week summary for a region based on start date
+data.get("/summary/:region", requireAuth, async (req, res) => {
   const { region } = req.params;
   const { start } = req.query;
 

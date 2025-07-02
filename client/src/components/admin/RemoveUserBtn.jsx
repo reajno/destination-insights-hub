@@ -1,10 +1,8 @@
-import { useState } from "react";
 import { toaster } from "@/components/chakra-ui/toaster";
 import useAdmin from "../../../hooks/useAdmin";
 import { Button, CloseButton, Dialog, Portal } from "@chakra-ui/react";
 
 const RemoveUserBtn = ({ onUserRemoved, user }) => {
-  const [isOpen, setIsOpen] = useState(false);
   const { deleteUser } = useAdmin();
 
   const userFullName = user.first_name + " " + user.last_name;
@@ -13,8 +11,9 @@ const RemoveUserBtn = ({ onUserRemoved, user }) => {
     e.preventDefault();
     const deleted = await deleteUser(user.id);
 
+    // Pass deleted user ID up to parent
     if (deleted) {
-      onUserRemoved(user.id); // Pass deleted user ID up to parent
+      onUserRemoved(user.id);
 
       toaster.create({
         description: `${userFullName} has been removed from the database`,
@@ -26,7 +25,7 @@ const RemoveUserBtn = ({ onUserRemoved, user }) => {
   return (
     <Dialog.Root placement="center">
       <Dialog.Trigger asChild>
-        <Button variant="outline" size="sm">
+        <Button variant="ghost" size="sm">
           ❌
         </Button>
       </Dialog.Trigger>

@@ -9,6 +9,7 @@ export const AdminProvider = ({ children }) => {
   const [adminError, setAdminError] = useState(null);
   const { user, accessToken, isAuthLoading } = useAuth();
 
+  // Check if user role is Admin
   const throwIfNotAdmin = () => {
     if (!isAuthLoading && user.role !== "Admin") {
       throw new Error("Only admins can perform this action");

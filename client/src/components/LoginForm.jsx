@@ -1,7 +1,7 @@
 import { useState } from "react";
-import useAuth from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Heading, Input, Text, VStack } from "@chakra-ui/react";
+import { Box, Button, Heading, Input, Text, Flex } from "@chakra-ui/react";
+import useAuth from "../../hooks/useAuth";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -25,13 +25,12 @@ const LoginForm = () => {
       boxShadow="md"
       w="full"
       maxW="md"
-      onSubmit={handleLogin}
-    >
+      onSubmit={handleLogin}>
       <Heading as="h2" size="lg" mb={6} textAlign="center">
         Sign in to your account
       </Heading>
 
-      <VStack spacing={4}>
+      <Flex spacing={4} flexDirection="column">
         <Box w="100%">
           <Text fontSize="sm" mb={1}>
             Email address
@@ -57,7 +56,7 @@ const LoginForm = () => {
             required
           />
         </Box>
-      </VStack>
+      </Flex>
 
       <Button type="submit" colorPalette={"green"} mt={6} w="full">
         Sign In

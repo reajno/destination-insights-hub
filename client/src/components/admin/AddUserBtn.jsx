@@ -11,7 +11,6 @@ import {
 } from "@chakra-ui/react";
 import { toaster } from "@/components/chakra-ui/toaster";
 import InputField from "@/components/chakra-ui/InputField";
-
 import { lgaMap } from "@/utils/maps";
 
 const AddUserBtn = ({ onUserAdded }) => {
@@ -31,7 +30,8 @@ const AddUserBtn = ({ onUserAdded }) => {
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    const newUser = await signUpUser(formData); // Errors will be handled by parent
+    // Errors will be handled by parent
+    const newUser = await signUpUser(formData);
 
     if (newUser) {
       // Pass new user up to parent
@@ -78,6 +78,7 @@ const AddUserBtn = ({ onUserAdded }) => {
             </Dialog.Header>
             <Box as="form" onSubmit={handleSignUp}>
               <Dialog.Body>
+                {/* USER FORM */}
                 <Fieldset.Root size="md">
                   <Fieldset.Content>
                     <InputField

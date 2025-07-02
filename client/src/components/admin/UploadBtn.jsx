@@ -23,7 +23,7 @@ const UploadBtn = () => {
     headers: [],
   });
 
-  const { uploadToServer, adminError } = useAdmin();
+  const { uploadToServer } = useAdmin();
 
   const handleFileChange = (e) => {
     const inputFile = e.target.files?.[0];
@@ -38,6 +38,8 @@ const UploadBtn = () => {
       (db) => db.name === e.target.value
     );
 
+    // Intended table name and associated table headers are matched
+    // and sent to the server for validation
     setFormData((prev) => ({
       ...prev,
       database: e.target.value,
@@ -78,7 +80,7 @@ const UploadBtn = () => {
               <Dialog.Title>Upload CSV</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body>
-              {/* Target DB Select */}
+              {/* TARGET DB SELECT */}
               <Field.Root className="mt-4">
                 <Field.Label>Select Target Database</Field.Label>
                 <NativeSelect.Root>
@@ -107,7 +109,7 @@ const UploadBtn = () => {
                   ) : null
                 )}
               </Field.Root>
-              {/* File Upload */}
+              {/* FILE UPLOAD */}
               <FileUpload.Root
                 maxW="xl"
                 alignItems="stretch"

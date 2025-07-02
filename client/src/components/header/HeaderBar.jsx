@@ -10,7 +10,7 @@ import { Link } from "react-router-dom";
 import localisLogo from "/src/assets/localis.png";
 import useAuth from "../../../hooks/useAuth";
 
-const NavBar = () => {
+const HeaderBar = () => {
   const { user, isAuthLoading } = useAuth();
   return (
     <>
@@ -23,14 +23,12 @@ const NavBar = () => {
         px={6}
         py={6}
         h={20}
-        zIndex={1}
-      >
+        zIndex={1}>
         <Flex justifyContent="space-between">
           <Link
             to="https://www.localis.co/"
             target="_blank"
-            rel="noopener noreferrer"
-          >
+            rel="noopener noreferrer">
             <Image
               src={localisLogo}
               alt="Localis logo"
@@ -44,8 +42,7 @@ const NavBar = () => {
             <Flex
               flexDirection="column"
               display="none"
-              md={{ display: "inline" }}
-            >
+              md={{ display: "inline" }}>
               <Text as="p" textStyle="xs" fontWeight="bold" textAlign="end">
                 {user.first_name + " " + user.last_name}
               </Text>
@@ -68,4 +65,4 @@ const NavBar = () => {
   );
 };
 
-export default NavBar;
+export default HeaderBar;

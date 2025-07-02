@@ -1,19 +1,23 @@
-import SpendBreakdownChart from "../components/charts/SpendBreakdownChart";
-import SpendChart from "../components/charts/SpendChart";
-import OccupancyADRChart from "../components/charts/OccupancyADRChart";
-import YearlyMetricsCards from "../components/YearlyMetricsCards";
 import { Box, Text, Flex, Grid, GridItem } from "@chakra-ui/react";
-import DashboardCard from "@/components/DashboardCard";
-import SummarySnapshotChart from "@/components/charts/SummarySnapshotChart";
-import DateSelect from "./filters/DateSelect";
 import { useState } from "react";
-import useMicrotaskEffect from "../../hooks/useMicrotaskEffect";
 import { toaster } from "./chakra-ui/toaster";
+
 import ALOSChart from "./charts/ALOSChart";
+import SpendChart from "../components/charts/SpendChart";
+import SpendBreakdownChart from "../components/charts/SpendBreakdownChart";
+import OccupancyADRChart from "../components/charts/OccupancyADRChart";
+import SummarySnapshotChart from "@/components/charts/SummarySnapshotChart";
+
+import DashboardCard from "@/components/DashboardCard";
+import YearlyMetricsCards from "../components/YearlyMetricsCards";
+import DateSelect from "./filters/DateSelect";
+import useMicrotaskEffect from "../../hooks/useMicrotaskEffect";
 
 const DashboardContent = ({ lgaName, year, isCompare = false }) => {
   const [date, setDate] = useState("");
   const [fetchError, setFetchError] = useState(null);
+
+  // isCompare prop defines grid layout for "DashboardCompare" component
 
   useMicrotaskEffect(() => {
     if (fetchError) {
@@ -110,6 +114,7 @@ const DashboardContent = ({ lgaName, year, isCompare = false }) => {
               <Text as="h2" color="black" fontWeight="bold" mb={4}>
                 Summary Snapshot {isCompare && `- ${lgaName}`}
               </Text>
+              {/* DATE FILTER */}
               <DateSelect onDateChange={setDate} />
             </Flex>
             <SummarySnapshotChart

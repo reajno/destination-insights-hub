@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import AdminContext from "../contexts/AdminContext";
 
+// This hook is used to provide access to the admin context
+
 const useAdmin = () => {
   const context = useContext(AdminContext);
   if (!context) {

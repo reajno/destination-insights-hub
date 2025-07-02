@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Text, Flex } from "@chakra-ui/react";
-import useAuth from "../../hooks/useAuth";
 import { lgaMap } from "../utils/maps";
+import useAuth from "../../hooks/useAuth";
 import YearSelect from "@/components/filters/YearSelect";
 import DashboardContent from "@/components/DashboardContent";
 
@@ -11,7 +11,7 @@ const DashboardHome = () => {
 
   return (
     <>
-      {/* HEADER */}
+      {/* FIXED HEADER */}
       <Flex
         bg="gray.50"
         position="fixed"
@@ -34,9 +34,11 @@ const DashboardHome = () => {
               {lgaMap[key].label}
             </Text>
           ))}
+        {/* YEAR FILTER */}
         <YearSelect onYearChange={setYear} />
       </Flex>
-      <Box h="92px" /> {/* Spacer */}
+      {/* SPACER */}
+      <Box h="92px" />
       <Flex
         p={6}
         gap={4}

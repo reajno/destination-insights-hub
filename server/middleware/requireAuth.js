@@ -7,7 +7,10 @@ const requireAuth = async (req, res, next) => {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
+  // Extract token
   const token = authHeader.replace("Bearer ", "");
+
+  // validate token
   const {
     data: { user },
     error,

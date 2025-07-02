@@ -77,18 +77,21 @@ router.post(
   requireAuth,
   upload.single("file"),
   async (req, res) => {
-    const { dbName } = req.params; // use for inserting in supabase
+    const { dbName } = req.params;
 
-    const requiredHeaders = JSON.parse(req.body.headers); // Parse string into array
+    // Parse string into array
+    const requiredHeaders = JSON.parse(req.body.headers);
 
     try {
       if (!req.file) throw new Error({ message: "No file uploaded" });
 
+      // Create string buffer
       const csvData = req.file.buffer.toString("utf8");
 
+      // Parse using Papa.parse
       const { data, meta } = await parseCSV(csvData);
 
-      // Validate CSV column headers
+      // Validate CSV column headers against request headers
       const csvHeaders = meta.fields;
       const missingHeaders = requiredHeaders.filter(
         (header) => !csvHeaders.includes(header)
@@ -102,7 +105,7 @@ router.post(
         });
       }
 
-      // Validate date format "YYYY-MM-DD"
+      // Validate date format "YYYY-MM-DD" - If invalid, identify row index and send to error message
       const invalidDateRows = data
         .map((row, i) => (!dateIsValid(row.date) ? i + 1 : null))
         .filter((i) => i !== null);
