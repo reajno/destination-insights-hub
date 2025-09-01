@@ -9,6 +9,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 # .env files (credentials, secrets)
+.env
 .env.*.local
 *.local
 

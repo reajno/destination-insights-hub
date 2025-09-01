@@ -1,1 +1,68 @@
-node_modules/
+# ---------------------------------------------------
+# 🌐 Node.js / NPM
+# ---------------------------------------------------
+/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# .env files (credentials, secrets)
+.env
+.env.*.local
+*.local
+
+# ---------------------------------------------------
+# 🔧 Vite / React (frontend)
+# ---------------------------------------------------
+dist/
+dist-ssr/
+.vite/
+
+# Build output (if deploying React separately)
+build/
+
+# ---------------------------------------------------
+# 🛠️ Editor / OS Specific
+# ---------------------------------------------------
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# VSCode
+.vscode/*
+!.vscode/extensions.json
+
+# JetBrains IDEs
+.idea/
+
+# Visual Studio
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.vscode
+
+# ---------------------------------------------------
+# 🗂 Temporary Files
+# ---------------------------------------------------
+*.swp
+*.swo
+*.tmp
+*.log
+
+# ---------------------------------------------------
+# ✅ Optional Git
+# ---------------------------------------------------
+.gitlab/
+.github/
+*.tgz
+
+# ---------------------------------------------------
+# 📦 Custom
+# ---------------------------------------------------
+coverage/
+logs/
