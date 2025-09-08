@@ -3,6 +3,8 @@ import { Grid, Text } from "@chakra-ui/react";
 import useAuth from "../../hooks/useAuth";
 import DashboardCard from "./DashboardCard";
 
+const serverURL = import.meta.env.VITE_SERVER_URL;
+
 const YearlyMetricsCards = ({ lgaName, year, onFetchError, isCompare }) => {
   const { accessToken, isAuthLoading } = useAuth();
   const [metrics, setMetrics] = useState(null);
@@ -11,7 +13,7 @@ const YearlyMetricsCards = ({ lgaName, year, onFetchError, isCompare }) => {
     const fetchMetrics = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/data/metrics/${lgaName}/${year}`,
+          `${serverURL}/api/data/metrics/${lgaName}/${year}`,
           {
             headers: { Authorization: `Bearer ${accessToken}` },
           }

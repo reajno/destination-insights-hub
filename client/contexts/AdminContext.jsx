@@ -2,6 +2,8 @@ import { createContext, useState } from "react";
 import useAuth from "../hooks/useAuth";
 import { supabase } from "../supabaseClient";
 
+const serverURL = import.meta.env.VITE_SERVER_URL;
+
 const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
@@ -44,7 +46,7 @@ export const AdminProvider = ({ children }) => {
     try {
       throwIfNotAdmin();
 
-      const res = await fetch("http://localhost:3001/api/admin/create-user", {
+      const res = await fetch(`${serverURL}/api/admin/create-user`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -72,16 +74,13 @@ export const AdminProvider = ({ children }) => {
     try {
       throwIfNotAdmin();
 
-      const res = await fetch(
-        `http://localhost:3001/api/admin/delete-user/${userId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const res = await fetch(`${serverURL}/api/admin/delete-user/${userId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       const { error } = await res.json();
       if (error) throw error;
 
@@ -101,16 +100,13 @@ export const AdminProvider = ({ children }) => {
     try {
       throwIfNotAdmin();
 
-      const res = await fetch(
-        `http://localhost:3001/api/admin/upload/${dbName}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: form,
-        }
-      );
+      const res = await fetch(`${serverURL}/api/admin/upload/${dbName}`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: form,
+      });
 
       const { message, error } = await res.json();
       if (error) throw error;
@@ -133,8 +129,7 @@ export const AdminProvider = ({ children }) => {
         signUpUser,
         deleteUser,
         uploadToServer,
-      }}
-    >
+      }}>
       {children}
     </AdminContext.Provider>
   );

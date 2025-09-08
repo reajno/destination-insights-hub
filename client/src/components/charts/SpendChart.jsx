@@ -12,6 +12,8 @@ import useAuth from "../../../hooks/useAuth";
 import { monthMap } from "@/utils/maps";
 import { Box } from "@chakra-ui/react";
 
+const serverURL = import.meta.env.VITE_SERVER_URL;
+
 const SpendChart = ({ lgaName, year, onFetchError }) => {
   const [data, setData] = useState([]);
   const { accessToken, isAuthLoading } = useAuth();
@@ -20,7 +22,7 @@ const SpendChart = ({ lgaName, year, onFetchError }) => {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/data/spend/${lgaName}/${year}`,
+          `${serverURL}/api/data/spend/${lgaName}/${year}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

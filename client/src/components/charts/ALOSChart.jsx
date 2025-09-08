@@ -13,6 +13,9 @@ import useAuth from "../../../hooks/useAuth";
 import { monthMap } from "@/utils/maps";
 import { Box } from "@chakra-ui/react";
 
+const serverURL = import.meta.env.VITE_SERVER_URL;
+
+
 const ALOSChart = ({ lgaName, year, onFetchError }) => {
   const [data, setData] = useState([]);
   const { accessToken, isAuthLoading } = useAuth();
@@ -21,7 +24,7 @@ const ALOSChart = ({ lgaName, year, onFetchError }) => {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/data/alos/${lgaName}/${year}`,
+          `${serverURL}/api/data/alos/${lgaName}/${year}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

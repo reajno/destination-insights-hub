@@ -13,6 +13,8 @@ import { Box } from "@chakra-ui/react";
 // Define colors for pie chart segments
 const COLORS = ["#8884d8", "#82ca9d", "#ffc658", "#d88484", "#00C49F"];
 
+const serverURL = import.meta.env.VITE_SERVER_URL;
+
 const SpendBreakdownChart = ({ lgaName, year, onFetchError }) => {
   const { accessToken, isAuthLoading } = useAuth();
   const [spendData, setSpendData] = useState([]);
@@ -21,7 +23,7 @@ const SpendBreakdownChart = ({ lgaName, year, onFetchError }) => {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/data/spend-breakdown/${lgaName}/${year}`,
+          `${serverURL}/api/data/spend-breakdown/${lgaName}/${year}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,

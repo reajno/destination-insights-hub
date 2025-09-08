@@ -13,6 +13,8 @@ import {
 import useAuth from "../../../hooks/useAuth";
 import { Box, Flex, Text } from "@chakra-ui/react";
 
+const serverURL = import.meta.env.VITE_SERVER_URL;
+
 const SummarySnapshotChart = ({ lgaName, date, onFetchError }) => {
   const [data, setData] = useState([]);
   const { accessToken, isAuthLoading } = useAuth();
@@ -21,7 +23,7 @@ const SummarySnapshotChart = ({ lgaName, date, onFetchError }) => {
     const fetchData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/api/data/summary/${lgaName}?start=${date}`,
+          `${serverURL}/api/data/summary/${lgaName}?start=${date}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
