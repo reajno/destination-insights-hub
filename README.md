@@ -1,93 +1,45 @@
 # Destination Insights Hub
 
-A regional tourism dashboard designed to help local government areas (LGAs), destination marketing organisations (DMOs), and tourism operators gain actionable insights from visitation data.
+A regional tourism dashboard designed to help local government areas (LGAs), destination marketing organisations (DMOs), and tourism operators gain actionable insights from visitor data.
 
-Built as a full-stack web application using **React**, **Vite**, and **Express**, this project is part of the IFQ717 Capstone Unit at QUT.
+The dashboard transforms complex tourism data into intuitive visualisations, enabling stakeholders to make informed decisions about destination development, marketing strategies, and resource allocation. Users can track visitor trends, analyse seasonal patterns, monitor key performance indicators, and identify emerging opportunities in their tourism markets.
 
----
+***All provided data are for demonstration purposes only.**
 
-## 🚀 Getting Started
+## Usage
 
-### Prerequisites
+The application implements role-based access control to ensure appropriate data access and functionality for different user types:
 
-- Node.js (v18 or higher)
-- npm
-- Git
+ ### User Roles and Permissions
 
----
+| Role                           | View Own LGA Data | PDF Exports | Compare Multiple LGAs | Upload CSV Data | User Management |
+| ------------------------------ | ----------------- | ----------- | --------------------- | --------------- | --------------- |
+| **Tourism Operator** (default) | ✅                 | ✅           | ❌                     | ❌               | ❌               |
+| **Tourism Analyst**            | ✅                 | ✅           | ✅                     | ❌               | ❌               |
+| **Admin**                      | ✅                 | ✅           | ✅                     | ✅               | ✅               |
 
-### 🔧 Project Setup
+**[Live Demo (Tourism Analyst)](https://destination-insights-hub.vercel.app/)** 
 
-#### Clone the Repository
-
-```bash
-git clone https://github.com/reajno/destination-insights-hub.git
-cd destination-insights-hub
-```
-
----
-
-### 🖥️ Frontend Setup (React + Vite)
-
-```bash
-cd client
-npm install
-npm run dev
-```
-
-Visit `http://localhost:5173` to view the frontend in your browser.
-
----
-
-### ⚙️ Backend Setup (Express)
-
-```bash
-cd server
-npm install
-npm run dev
-```
-
-Visit `http://localhost:3000/` to confirm the API is running.
-
----
-
-## 📁 Project Structure
-
-```
-destination-insights-hub/
-├── client/      # Frontend React app
-│   └── src/     # Components and pages
-├── server/      # Backend Express API
-│   └── index.js # API entry point
-└── README.md    # Project overview and setup
-```
-
----
 
 ## 📌 Features
 
 - ✅ Role-based user access (Admin, Analyst, Operator)
-- ✅ Dashboard with charts
-- ✅ Data filtering by date
-- ✅ Export dashboard as PDFs
-- ✅ Compare various regions available from database
-- ✅ Upload CSV data to database
 
----
+- ✅ Regional tourism data visualisations
+
+- ✅ Data filtering by date
+
+- ✅ Export dashboard as PDF
+
+- ✅ Compare regions available from database
+
+- ✅ Upload CSV to database
+
 
 ## 📊 Tech Stack
 
-| Layer    | Tech                             |
-| -------- | -------------------------------- |
-| Frontend | React, Vite, Chakra UI, Recharts |
-| Backend  | Node.js, Express                 |
-| Database | PostgreSQL                       |
-| Auth     | Supabase Auth                    |
-
----
-
-## 🧑‍🤝‍🧑 Dev Team
-
-- **John Reano** — Backend & Supabase Auth (OOO 2–15 May)
-
----
+| Layer    | Tech                                 |
+| -------- | ------------------------------------ |
+| Frontend | React, Chakra UI, Recharts, jsPDF    |
+| Backend  | Express, Multer, Papaparse, Supabase |
+| Database | PostgreSQL                           |
