@@ -1,4 +1,4 @@
-import { Box, Flex, Text, Spacer } from "@chakra-ui/react";
+import { Box, Text, Spacer } from "@chakra-ui/react";
 import Login from "../components/LoginForm";
 import HeaderSpacer from "@/components/header/HeaderSpacer";
 import MainContainer from "@/components/MainContainer";
@@ -28,7 +28,7 @@ const Home = () => {
         <Spacer />
         {/* FOOTER */}
         <Text fontSize="xs" color="gray.500" textAlign="center">
-          Built for IFQ717 – Web Development Capstone (QUT)
+          © {new Date().getFullYear()} <a href="https://github.com/reajno">AJ Reaño</a>
         </Text>
       </MainContainer>
     </>
