@@ -1,7 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Heading, Input, Text, Flex } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Heading,
+  Input,
+  Text,
+  Flex,
+} from "@chakra-ui/react";
 import useAuth from "../../hooks/useAuth";
+
+const demoEmail = import.meta.env.VITE_DEMO_EMAIL;
+const demoPass = import.meta.env.VITE_DEMO_PASS;
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -9,10 +20,18 @@ const LoginForm = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const performLogin = async (email, password) => {
     const isLoggedIn = await login(email, password);
     if (isLoggedIn) navigate("/dashboard", { replace: true });
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    performLogin(email, password);
+  };
+
+  const handleDemo = async () => {
+    performLogin(demoEmail, demoPass);
   };
 
   return (
@@ -58,9 +77,18 @@ const LoginForm = () => {
         </Box>
       </Flex>
 
-      <Button type="submit" colorPalette={"green"} mt={6} w="full">
-        Sign In
-      </Button>
+      <ButtonGroup w={"100%"} mt={6} justifyContent={"center"}>
+        <Button
+          colorPalette={"yellow"}
+          flex={1}
+          variant={"subtle"}
+          onClick={handleDemo}>
+          Demo Mode
+        </Button>
+        <Button type="submit" colorPalette={"green"} flex={1}>
+          Sign In
+        </Button>
+      </ButtonGroup>
     </Box>
   );
 };
